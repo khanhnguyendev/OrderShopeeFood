@@ -8,7 +8,6 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 
 let shopUrl = '';
-var foodsData = [];
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
@@ -96,6 +95,7 @@ function crawlerShopeeFood(req, res) {
     });
 
   let getData = html => {
+    let foodsData = []
     const $ = cheerio.load(html);
     $('.item-restaurant-row').each((i, elem) => {
       let item = {
@@ -108,6 +108,6 @@ function crawlerShopeeFood(req, res) {
     })
     console.log(shopUrl)
     console.log("Crawling data complete...")
-    res.render('room', { roomName: req.params.room, foods: foodsData })
+    res.render('menu', { roomName: req.params.room, foods: foodsData })
   }
 }
