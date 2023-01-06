@@ -9,6 +9,7 @@
     <%= roomName %>
   </title>
   <link rel="stylesheet" href="/css/room.css">
+  <link rel="stylesheet" href="/css/menu.css">
   <link rel="stylesheet" href="/css/bg.css">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <script>
@@ -40,7 +41,7 @@
             <div class="col-sm-5 border-animation">
               <div class="foods-display scroll ">
                 <% foods.forEach((food)=> { %>
-                  <!-- <div class="row food-card">
+                  <div class="row food-card">
                     <div class="col-sm-5 images">
                       <img src="<%= food.image %>" />
                     </div>
@@ -74,27 +75,6 @@
                         </div>
                       </div>
                     </div>
-                  </div> -->
-
-                  <div class="wrapper">
-
-                    <div class="header">
-                      <img src="<%= food.image %>" />
-                    </div>
-
-                    <h1 class="name">
-                      <%= food.title %>
-                    </h1>
-
-                    <div class="border"></div>
-
-                    <p class="info">
-                      <%= food.des %>
-                    </p>
-
-                    <div class="grey-border"></div>
-
-                    <a href="#" class="button"><%= food.price %></a>
                   </div>
                   <% }) %>
               </div>
@@ -107,7 +87,7 @@
             <!-- Foods Display Area -->
 
             <!-- Order Detail Area -->
-            <div class="col-sm-4 border-animation" id="message-container">
+            <div class="col-sm-5 border-animation" id="message-container">
               <!-- <input type="text" id="message-input"> -->
               <!-- <button type="submit" id="send-button">Send</button> -->
             </div>

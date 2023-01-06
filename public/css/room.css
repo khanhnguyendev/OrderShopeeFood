@@ -34,8 +34,9 @@ body {
 }
 
 .container {
-    width: 1080px !important
+    width: 960px !important
 }
+
 
 .wrapper {
     background: #fff;
@@ -159,7 +160,7 @@ body {
 }
 
 #button-add {
-    background: #cda9ac;
+    background-image: -webkit-linear-gradient(164deg,#4ca0fc 23%,#e02fee 76%);
     padding: 5px;
     outline: 0;
     border: 0;

@@ -52,13 +52,13 @@ socket.on('user-disconnected', name => {
 })
 
 function appendMessage(message) {
-  const messageElement = document.createElement('div')
+  const messageElement = document.createElement('li')
   messageElement.innerText = message
   messageContainer.append(messageElement)
 }
 
 function appendLog(log) {
-  const logElement = document.createElement('div')
+  const logElement = document.createElement('li')
   logElement.innerText = log
   logContainer.append(logElement)
 }
