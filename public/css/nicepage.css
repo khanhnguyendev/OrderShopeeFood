@@ -6715,7 +6715,7 @@ section.u-image:not(.u-hover-box),
   }
 }
 .u-body .u-sheet .u-sheet {
-  width: 100% !important;
+  width: 960px !important;
 }
 .u-container-layout {
   position: relative;
