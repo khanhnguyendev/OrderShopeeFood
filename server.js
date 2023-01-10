@@ -81,12 +81,11 @@ io.on('connection', socket => {
     fs.writeFile(__dirname + "/data/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
       // Error checking
       if (err) throw err;
-      console.log("New order added: " + JSON.stringify(orders));
+      console.log("New order added: " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice);
     });
 
     // Send order detail to views
-    let orderMessage = orderDetail.orderUser + ' đã đặt ' + orderDetail.foodTitle + ' x ' + orderDetail.foodPrice
-    socket.emit('chat-message', { message: orderMessage });
+    socket.to(orderDetail.roomName).broadcast.emit('chat-message', { message: orderDetail });
   })
 })
 

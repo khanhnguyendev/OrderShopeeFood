@@ -1,5 +1,5 @@
 const socket = io()
-const messageContainer = document.getElementById('message-container')
+const orderContainer = document.getElementById('display-order')
 const logContainer = document.getElementById('log-container')
 const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container')
@@ -10,16 +10,18 @@ var userName = '';
 // send food oder detail
 function sendOrder(event) {
   let oderDetail = {
+    roomName : roomName,
     orderUser : userName,
     foodTitle : event.getAttribute('data-title'),
     foodPrice : event.getAttribute('data-price')
   };
   
-  socket.emit('send-order', oderDetail)
+  socket.emit('send-chat-message', roomName, userName, orderDetail)
 }
 
 if (messageForm != null) {
-  let name = prompt('What is your name?')
+  // let name = prompt('What is your name?')
+  let name = 'Test'
   userName = name;
   appendLog('You joined')
   socket.emit('new-user', roomName, name)
@@ -41,7 +43,7 @@ socket.on('room-created', room => {
 })
 
 socket.on('chat-message', data => {
-  appendMessage(`${data.message}`)
+  appendMessage(data.message)
 })
 
 socket.on('user-connected', name => {
@@ -53,9 +55,14 @@ socket.on('user-disconnected', name => {
 })
 
 function appendMessage(message) {
-  const messageElement = document.createElement('li')
-  messageElement.innerText = message
-  messageContainer.append(messageElement)
+  const el = document.createElement('div')
+  let el1 = "<li>"
+  let el2 = "<strong id='order-user'>" + message.orderUser + "</strong>"
+  let el3 = "<p id='order-info'>" + "đã đặt " + message.foodTitle + " x " + message.foodPrice + "</p>"
+  let el4 = "</li>"
+  el.innerHTML = el1 + el2 + el3 + el4
+
+  orderContainer.appendChild(el)
 }
 
 function appendLog(log) {
