@@ -31616,7 +31616,7 @@ li.active > a.u-button-style.u-button-style.u-border-active-palette-4-light-1 {
 }
 .u-border-palette-4-light-2,
 .u-separator-palette-4-light-2:after {
-  border-color: #adf6f2;
+  border-color: rgba(128,128,128,1);
   stroke: #adf6f2;
 }
 .u-button-style.u-border-palette-4-light-2 {
