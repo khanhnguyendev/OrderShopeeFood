@@ -5,16 +5,17 @@ const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container')
 const orderButton = document.querySelectorAll('#button-add')
 let orderDetail = '';
-let userName = '';
+var userName = '';
 
 // send food oder detail
 function sendOrder(event) {
-  // message = JSON.stringify({
-  //   orderUser: userName,
-  //   foodName: event.getAttribute('data-title'),
-  //   foodPrice: event.getAttribute('data-price')
-  // });
-  orderDetail = userName + ' đã đặt ' + event.getAttribute('data-title') + ' x ' + event.getAttribute('data-price')
+  let oderDetail = {
+    orderUser : userName,
+    foodTitle : event.getAttribute('data-title'),
+    foodPrice : event.getAttribute('data-price')
+  };
+  
+  socket.emit('send-order', oderDetail)
 }
 
 if (messageForm != null) {
@@ -23,11 +24,11 @@ if (messageForm != null) {
   appendLog('You joined')
   socket.emit('new-user', roomName, name)
 
-  messageForm.addEventListener('submit', e => {
-    e.preventDefault()
-    appendMessage(orderDetail)
-    socket.emit('send-chat-message', roomName, name, orderDetail)
-  })
+  // messageForm.addEventListener('submit', e => {
+  //   e.preventDefault()
+  //   appendMessage(orderDetail)
+  //   socket.emit('send-chat-message', roomName, name, orderDetail)
+  // })
 }
 
 socket.on('room-created', room => {
