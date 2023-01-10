@@ -25,6 +25,14 @@ app.post('/room', (req, res) => {
   if (rooms[req.body.orderShopName] != null) {
     return res.redirect('/')
   }
+  // Clear menu before create new room
+  fs.writeFile(__dirname + "/data/menu.json", '[]', function() {
+    console.log('Menu has been reset')
+  })
+  // Clear order log before create new room
+  fs.writeFile(__dirname + "/data/orders.json", '[]', function() {
+    console.log('Order log has been cleared')
+  })
   rooms[req.body.orderShopName] = { users: {} }
   shopUrl = req.body.orderShopUrl;
   res.redirect(req.body.orderShopName)
@@ -36,7 +44,12 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  crawlerShopeeFood(req, res);
+  let menuJson = fs.readFileSync(__dirname + "/data/menu.json");
+  if (menuJson.length < 3) {
+    crawlerShopeeFood(req, res);
+  } else {
+    res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson) })
+  }
 })
 
 io.on('connection', socket => {
@@ -59,22 +72,21 @@ io.on('connection', socket => {
    * Send order detail
    */
   socket.on('send-order', (orderDetail) => {
-    let json = [];
-    // Saving order detail to file
-    fs.readFile(__dirname + '/data/order.json',  function (err, data) {
-      json = JSON.parse(data);
-      json.push(JSON.stringify(orderDetail));
-      console.log(json);
-    });    
 
-    fs.writeFile(__dirname + '/data/order.json', JSON.stringify(json), function(err){
+    // Saving order detail to file
+    let orders = fs.readFileSync(__dirname + "/data/orders.json");
+    let ordersJson = JSON.parse(orders);
+    ordersJson.push(orderDetail);
+
+    fs.writeFile(__dirname + "/data/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
+      // Error checking
       if (err) throw err;
-      console.log('Data was appended to file!');
+      console.log("New order added: " + JSON.stringify(orders));
     });
 
     // Send order detail to views
     let orderMessage = orderDetail.orderUser + ' đã đặt ' + orderDetail.foodTitle + ' x ' + orderDetail.foodPrice
-    socket.emit('chat-message', {message: orderMessage});
+    socket.emit('chat-message', { message: orderMessage });
   })
 })
 
@@ -116,8 +128,16 @@ function crawlerShopeeFood(req, res) {
       }
       foodsData.push(item)
     })
-    console.log(shopUrl)
-    console.log("Crawling data complete...")
-    res.render('menu', { roomName: req.params.room, foods: foodsData })
+
+    fs.writeFile(__dirname + "/data/menu.json", JSON.stringify(foodsData), 'utf8', function (err) {
+      if (err) {
+        console.log("An error occured while writing JSON Object to File.");
+        return console.log(err);
+      }
+
+      console.log(shopUrl)
+      console.log("Crawling data complete...")
+      res.render('menu', { roomName: req.params.room, foods: foodsData })
+    });
   }
 }

@@ -24,11 +24,11 @@ if (messageForm != null) {
   appendLog('You joined')
   socket.emit('new-user', roomName, name)
 
-  // messageForm.addEventListener('submit', e => {
-  //   e.preventDefault()
-  //   appendMessage(orderDetail)
-  //   socket.emit('send-chat-message', roomName, name, orderDetail)
-  // })
+  messageForm.addEventListener('submit', e => {
+    e.preventDefault()
+    appendMessage(orderDetail)
+    socket.emit('send-chat-message', roomName, name, orderDetail)
+  })
 }
 
 socket.on('room-created', room => {
