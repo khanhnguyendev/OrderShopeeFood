@@ -56,9 +56,11 @@ a {
 }
 
 .page {
+  height: 100%;
   background-color: transparent;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .main-page-content {

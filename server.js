@@ -59,12 +59,22 @@ io.on('connection', socket => {
    * Send order detail
    */
   socket.on('send-order', (orderDetail) => {
+    let json = [];
     // Saving order detail to file
-    fs.appendFile(__dirname + '/data/order.json', JSON.stringify(orderDetail), function (err) {
+    fs.readFile(__dirname + '/data/order.json',  function (err, data) {
+      json = JSON.parse(data);
+      json.push(JSON.stringify(orderDetail));
+      console.log(json);
+    });    
+
+    fs.writeFile(__dirname + '/data/order.json', JSON.stringify(json), function(err){
       if (err) throw err;
-      console.log(orderDetail);
-      console.log('Saved!');
+      console.log('Data was appended to file!');
     });
+
+    // Send order detail to views
+    let orderMessage = orderDetail.orderUser + ' đã đặt ' + orderDetail.foodTitle + ' x ' + orderDetail.foodPrice
+    socket.emit('chat-message', {message: orderMessage});
   })
 })
 
