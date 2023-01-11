@@ -4,8 +4,18 @@ const logContainer = document.getElementById('log-container')
 const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container')
 const orderButton = document.querySelectorAll('#button-add')
+const showButton = document.getElementById('showDialog');
+const nameModal = document.getElementById('name-modal');
+const txtuserName = document.getElementById('userName');
+const confirmBtn = document.getElementById('confirmBtn');
+
 let orderDetail = '';
 var userName = '';
+
+confirmBtn.addEventListener('click', (e) => {
+  userName = txtuserName.value;
+  document.getElementById("inputForm").style.display = "none";
+})
 
 // send food oder detail
 function sendOrder(event) {
@@ -38,17 +48,23 @@ function sendOrder(event) {
 //   });
 // }, 100) // milliseconds
 
+if (userName === '') {
+  document.getElementById("inputForm").style.display = "block";
+} else {
+  document.getElementById("inputForm").style.display = "none";
+}
+
 if (messageForm != null) {
   // let name = prompt('What is your name?')
-  let name = 'Test'
-  userName = name;
+  // let name = 'Test'
+  // userName = name;
   appendLog('You joined')
-  socket.emit('new-user', roomName, name)
+  socket.emit('new-user', roomName, userName)
 
   messageForm.addEventListener('submit', e => {
     e.preventDefault()
     appendMessage(orderDetail)
-    socket.emit('send-chat-message', roomName, name, orderDetail)
+    socket.emit('send-chat-message', roomName, userName, orderDetail)
   })
 }
 
