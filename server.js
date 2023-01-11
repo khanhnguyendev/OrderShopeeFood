@@ -6,6 +6,7 @@ const io = require('socket.io')(server)
 const Nightmare = require('nightmare')
 const cheerio = require('cheerio');
 const fs = require('fs');
+const { events } = require('socket.io/lib/namespace');
 
 let shopUrl = '';
 
@@ -26,11 +27,11 @@ app.post('/room', (req, res) => {
     return res.redirect('/')
   }
   // Clear menu before create new room
-  fs.writeFile(__dirname + "/data/menu.json", '[]', function() {
+  fs.writeFile(__dirname + "/data/menu.json", '[]', function () {
     console.log('Menu has been reset')
   })
   // Clear order log before create new room
-  fs.writeFile(__dirname + "/data/orders.json", '[]', function() {
+  fs.writeFile(__dirname + "/data/orders.json", '[]', function () {
     console.log('Order log has been cleared')
   })
   rooms[req.body.orderShopName] = { users: {} }
@@ -58,9 +59,15 @@ io.on('connection', socket => {
     rooms[room].users[socket.id] = name
     socket.to(room).broadcast.emit('user-connected', name)
   })
-  socket.on('send-chat-message', (room, name, message) => {
-    socket.to(room).broadcast.emit('chat-message', { room: room, name: name, message: message, })
+  
+  /**
+   * Tracking orders
+   */
+  fs.watch(__dirname + "/data/orders.json", () => {
+    let orders = fs.readFileSync(__dirname + "/data/orders.json")
+    console.log("Sent JSON" + orders);
   })
+
   socket.on('disconnect', () => {
     getUserRooms(socket).forEach(room => {
       socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id])
@@ -74,7 +81,7 @@ io.on('connection', socket => {
   socket.on('send-order', (orderDetail) => {
 
     // Saving order detail to file
-    let orders = fs.readFileSync(__dirname + "/data/orders.json");
+    orders = fs.readFileSync(__dirname + "/data/orders.json");
     let ordersJson = JSON.parse(orders);
     ordersJson.push(orderDetail);
 
@@ -84,8 +91,6 @@ io.on('connection', socket => {
       console.log("New order added: " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice);
     });
 
-    // Send order detail to views
-    socket.to(orderDetail.roomName).broadcast.emit('chat-message', { message: orderDetail });
   })
 })
 

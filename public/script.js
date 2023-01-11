@@ -9,15 +9,34 @@ var userName = '';
 
 // send food oder detail
 function sendOrder(event) {
-  let oderDetail = {
-    roomName : roomName,
-    orderUser : userName,
-    foodTitle : event.getAttribute('data-title'),
-    foodPrice : event.getAttribute('data-price')
+  orderDetail = {
+    roomName: roomName,
+    orderUser: userName,
+    foodTitle: event.getAttribute('data-title'),
+    foodPrice: event.getAttribute('data-price')
   };
-  
-  socket.emit('send-chat-message', roomName, userName, orderDetail)
+
+  socket.emit('send-order', orderDetail)
 }
+
+// // Polling to update data
+// setInterval(function () {
+//   fetch('/update', {
+//     method: 'get'
+//   }).then(function (response) {
+//     // UPDATE WEATHER HERE
+//     const el = document.createElement('div')
+//     let el1 = "<li>"
+//     let el2 = "<strong id='order-user'>" + message.orderUser + "</strong>"
+//     let el3 = "<p id='order-info'>" + "đã đặt " + message.foodTitle + " x " + message.foodPrice + "</p>"
+//     let el4 = "</li>"
+//     el.innerHTML = el1 + el2 + el3 + el4
+
+//     orderContainer.appendChild(el)
+//   }).catch(function (err) {
+//     // Error :(
+//   });
+// }, 100) // milliseconds
 
 if (messageForm != null) {
   // let name = prompt('What is your name?')
