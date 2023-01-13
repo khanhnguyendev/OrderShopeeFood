@@ -9,25 +9,8 @@ const nameModal = document.getElementById('name-modal');
 const txtuserName = document.getElementById('userName');
 const confirmBtn = document.getElementById('confirmBtn');
 
-let orderDetail = '';
-var userName = '';
-
-confirmBtn.addEventListener('click', (e) => {
-  userName = txtuserName.value;
-  document.getElementById("inputForm").style.display = "none";
-})
-
-// send food oder detail
-function sendOrder(event) {
-  orderDetail = {
-    roomName: roomName,
-    orderUser: userName,
-    foodTitle: event.getAttribute('data-title'),
-    foodPrice: event.getAttribute('data-price')
-  };
-
-  socket.emit('send-order', orderDetail)
-}
+var orderDetail = '';
+var cookieUserName = getCookie('userName');
 
 // // Polling to update data
 // setInterval(function () {
@@ -48,24 +31,70 @@ function sendOrder(event) {
 //   });
 // }, 100) // milliseconds
 
-if (userName === '') {
+function confirmUserName() {
+  userName = txtuserName.value;
+  document.getElementById("inputForm").style.display = "none";
+  setCookie('userName', userName, 1);
+  appendLog('You joined')
+  socket.emit('new-user', roomName, userName)
+}
+
+function setCookie(name, value, days) {
+  var expires = "";
+  if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days*24*60*60*1000));
+      expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  }
+  return null;
+}
+
+function eraseCookie(name) {   
+  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+if (cookieUserName == null) {
   document.getElementById("inputForm").style.display = "block";
 } else {
   document.getElementById("inputForm").style.display = "none";
+  socket.emit('old-user', roomName, cookieUserName)
 }
 
-if (messageForm != null) {
-  // let name = prompt('What is your name?')
-  // let name = 'Test'
-  // userName = name;
-  appendLog('You joined')
-  socket.emit('new-user', roomName, userName)
+// if (messageForm != null) {
+//   // let name = prompt('What is your name?')
+//   // let name = 'Test'
+//   // userName = name;
+//   appendLog('You joined')
+//   socket.emit('new-user', roomName, userName)
 
-  messageForm.addEventListener('submit', e => {
-    e.preventDefault()
-    appendMessage(orderDetail)
-    socket.emit('send-chat-message', roomName, userName, orderDetail)
-  })
+//   messageForm.addEventListener('submit', e => {
+//     e.preventDefault()
+//     // appendMessage(orderDetail)
+//     // socket.emit('send-chat-message', roomName, userName, orderDetail)
+//   })
+// }
+
+// send food oder detail
+function sendOrder(event) {
+  orderDetail = {
+    roomName: roomName,
+    orderUser: cookieUserName,
+    foodTitle: event.getAttribute('data-title'),
+    foodPrice: event.getAttribute('data-price')
+  };
+
+  socket.emit('send-order', orderDetail)
 }
 
 socket.on('room-created', room => {

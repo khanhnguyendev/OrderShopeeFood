@@ -44,28 +44,31 @@ app.post('/room', (req, res) => {
 app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
-  }
-  let menuJson = fs.readFileSync(__dirname + "/data/menu.json");
-  if (menuJson.length < 3) {
-    crawlerShopeeFood(req, res);
   } else {
-    res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson) })
+    let menuJson = fs.readFileSync(__dirname + "/data/menu.json");
+    if (menuJson.length < 3) {
+      crawlerShopeeFood(req, res);
+    } else {
+      res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson) })
+    }
   }
+
 })
+
 
 io.on('connection', socket => {
   socket.on('new-user', (room, name) => {
     socket.join(room)
     rooms[room].users[socket.id] = name
     socket.to(room).broadcast.emit('user-connected', name)
+    console.log('[' + Date.now() + ']' + name + ' connected to ' + room)
   })
-  
-  /**
-   * Tracking orders
-   */
-  fs.watch(__dirname + "/data/orders.json", () => {
-    let orders = fs.readFileSync(__dirname + "/data/orders.json")
-    console.log("Sent JSON" + orders);
+
+  socket.on('old-user', (room, name) => {
+    socket.join(room)
+    rooms[room].users[socket.id] = name
+    socket.to(room).broadcast.emit('user-connected', name)
+    console.log('[' + Date.now() + ']' + name + ' connected to ' + room)
   })
 
   socket.on('disconnect', () => {
@@ -99,6 +102,9 @@ server.listen(port, function () {
   console.log("http://localhost:" + port);
 });
 
+/**
+* Get users room
+*/
 function getUserRooms(socket) {
   return Object.entries(rooms).reduce((names, [name, room]) => {
     if (room.users[socket.id] != null) names.push(name)
@@ -106,6 +112,9 @@ function getUserRooms(socket) {
   }, [])
 }
 
+/**
+* Crawling data shopee food
+*/
 function crawlerShopeeFood(req, res) {
   const nightmare = Nightmare({ show: false })
   nightmare
