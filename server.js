@@ -41,6 +41,26 @@ app.post('/room', (req, res) => {
   io.emit('room-created', req.body.orderShopName)
 })
 
+app.get('/api/order', (req, res) => {
+  // let order = fs.readFileSync(__dirname + "/data/menu.json");
+  // let orderJson = JSON.parse(order)
+  let obj;
+  let orders = [];
+  fs.readFile(__dirname + "/data/orders.json", 'utf8', function (err, data) {
+    if (err) throw err;
+    obj = JSON.parse(data);
+    console.log(obj);
+    
+    for (let i = 0; i < obj.length; i++) {
+      let ob = obj[i];
+      orders.push(ob)
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.json(orders);
+  });
+})
+
 app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
@@ -93,6 +113,9 @@ io.on('connection', socket => {
       if (err) throw err;
       console.log("New order added: " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice);
     });
+
+    // Send order to client
+    socket.emit('receive-order', null)
 
   })
 })

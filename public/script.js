@@ -10,26 +10,37 @@ const txtuserName = document.getElementById('userName');
 const confirmBtn = document.getElementById('confirmBtn');
 
 var orderDetail = '';
+var orderJson;
 var cookieUserName = getCookie('userName');
 
-// // Polling to update data
+// Polling to update data
 // setInterval(function () {
 //   fetch('/update', {
 //     method: 'get'
 //   }).then(function (response) {
 //     // UPDATE WEATHER HERE
-//     const el = document.createElement('div')
-//     let el1 = "<li>"
-//     let el2 = "<strong id='order-user'>" + message.orderUser + "</strong>"
-//     let el3 = "<p id='order-info'>" + "đã đặt " + message.foodTitle + " x " + message.foodPrice + "</p>"
-//     let el4 = "</li>"
-//     el.innerHTML = el1 + el2 + el3 + el4
+//     // const el = document.createElement('div')
+//     // let el1 = "<li>"
+//     // let el2 = "<strong id='order-user'>" + message.orderUser + "</strong>"
+//     // let el3 = "<p id='order-info'>" + "đã đặt " + message.foodTitle + " x " + message.foodPrice + "</p>"
+//     // let el4 = "</li>"
+//     // el.innerHTML = el1 + el2 + el3 + el4
 
-//     orderContainer.appendChild(el)
+//     // orderContainer.appendChild(el)
+//     console.log(response)
 //   }).catch(function (err) {
 //     // Error :(
 //   });
-// }, 100) // milliseconds
+// }, 10000) // milliseconds
+
+async function fetchingJson() {
+  await fetch('http://localhost:3000/api/order')
+  .then((response) => response.json())
+  .then((orders) => {
+    orderJson = orders
+  })
+}
+
 
 function confirmUserName() {
   userName = txtuserName.value;
@@ -68,6 +79,7 @@ if (cookieUserName == null) {
   document.getElementById("inputForm").style.display = "block";
 } else {
   document.getElementById("inputForm").style.display = "none";
+  setInterval(fetchingJson, 1000);
   socket.emit('old-user', roomName, cookieUserName)
 }
 
@@ -118,15 +130,21 @@ socket.on('user-disconnected', name => {
   appendLog(`${name} disconnected`)
 })
 
-function appendMessage(message) {
-  const el = document.createElement('div')
-  let el1 = "<li>"
-  let el2 = "<strong id='order-user'>" + message.orderUser + "</strong>"
-  let el3 = "<p id='order-info'>" + "đã đặt " + message.foodTitle + " x " + message.foodPrice + "</p>"
-  let el4 = "</li>"
-  el.innerHTML = el1 + el2 + el3 + el4
+socket.on('receive-order', stream => {
+  for (const order of orderJson) {
+    appendMessage(order)
+  }
+})
 
-  orderContainer.appendChild(el)
+function appendMessage(order) {
+    const el = document.createElement('div')
+    let el1 = "<li>"
+    let el2 = "<strong id='order-user'>" + order.orderUser + "</strong>"
+    let el3 = "<p id='order-info'>" + "đã đặt " + order.foodTitle + " x " + order.foodPrice + "</p>"
+    let el4 = "</li>"
+    el.innerHTML = el1 + el2 + el3 + el4
+    orderContainer.appendChild(el)
+
 }
 
 function appendLog(log) {
