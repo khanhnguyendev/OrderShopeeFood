@@ -14,6 +14,10 @@
   <script defer src="http://192.168.33.21:3000/socket.io/socket.io.js"></script>
   <script defer src="script.js"></script>
   <script defer src="background.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://assets.codepen.io/16327/MorphSVGPlugin3.min.js"></script>
+  <script src="https://assets.codepen.io/16327/Physics2DPlugin3.min.js"></script>
+
   <script>
     const roomName = "<%= roomName %>"
   </script>
@@ -60,10 +64,59 @@
                                       <h4 class="u-align-center u-custom-font u-font-montserrat u-text u-text-2">
                                         <%= food.title %>
                                       </h4>
-                                      <a onclick="sendOrder(this)" data-title="<%= food.title %>"
+                                      <!-- <a onclick="sendOrder(this)" data-title="<%= food.title %>"
                                         data-price="<%= food.price %>"
                                         class="u-border-2 u-border-grey-75 u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-base u-none u-radius-50 u-text-body-alt-color u-text-hover-palette-3-base u-btn-1">
-                                        &nbsp;<%= food.price %></a>
+                                        &nbsp;<%= food.price %></a> -->
+                                      <!-- <button class="button-order u-btn-1" onclick="sendOrder(this)" data-title="<%= food.title %>"
+                                        data-price="<%= food.price %>">
+                                        <div class="wrapper">
+                                          <span><%= food.price %></span>
+                                          <div class="circle circle-12"></div>
+                                          <div class="circle circle-11"></div>
+                                          <div class="circle circle-10"></div>
+                                          <div class="circle circle-9"></div>
+                                          <div class="circle circle-8"></div>
+                                          <div class="circle circle-7"></div>
+                                          <div class="circle circle-6"></div>
+                                          <div class="circle circle-5"></div>
+                                          <div class="circle circle-4"></div>
+                                          <div class="circle circle-3"></div>
+                                          <div class="circle circle-2"></div>
+                                          <div class="circle circle-1"></div>
+                                        </div>
+                                      </button> -->
+
+                                      <button class="add-to-cart" onclick="sendOrder(this)"
+                                        data-title="<%= food.title %>" data-price="<%= food.price %>">
+                                        <div class="cart">
+                                          <svg viewBox="0 0 24 19">
+                                            <path
+                                              d="M11.25 17C11.25 17.6904 10.6904 18.25 10 18.25C9.30964 18.25 8.75 17.6904 8.75 17C8.75 16.3096 9.30964 15.75 10 15.75C10.6904 15.75 11.25 16.3096 11.25 17Z"
+                                              stroke-width="1.5 " />
+                                            <path
+                                              d="M19.25 17C19.25 17.6904 18.6904 18.25 18 18.25C17.3096 18.25 16.75 17.6904 16.75 17C16.75 16.3096 17.3096 15.75 18 15.75C18.6904 15.75 19.25 16.3096 19.25 17Z"
+                                              stroke-width="1.5 " />
+                                            <path
+                                              d="M1 1H5L5.91304 4M5.91304 4L8.06853 11.0823C8.32483 11.9245 9.10161 12.5 9.98188 12.5H18.585C19.4329 12.5 20.1887 11.9653 20.471 11.1656L23 4H5.91304Z"
+                                              stroke-width="2" />
+                                          </svg>
+                                          <img
+                                            srcset="https://assets.codepen.io/165585/alge.png 1x, https://assets.codepen.io/165585/alge@2x.png 2x" />
+                                        </div>
+                                        <span>
+                                          <%= food.price %>
+                                        </span>
+                                        <div class="check">
+                                          <svg viewBox="0 0 10 10">
+                                            <path d="M2 5L4 7L8 3" />
+                                          </svg>
+                                        </div>
+                                        <svg class="background" viewBox="0 0 142 46">
+                                          <path
+                                            d="M0 19C0 10.7157 6.71573 4 15 4H41.4599C53.6032 4 62.4844 4 72.5547 4C82.6251 4 91.5063 4 103.65 4H137C139.761 4 142 6.23858 142 9V31C142 39.2843 135.284 46 127 46H5C2.23858 46 0 43.7614 0 41V19Z" />
+                                        </svg>
+                                      </button>
                                     </div>
                                   </div>
                                   <% }) %>
@@ -89,11 +142,15 @@
                                   <ol class="alternating-colors" id="display-order">
 
                                     <% orders.forEach((orderDetail)=> { %>
-                                    <li>
-                                      <strong id="order-user"><%= orderDetail.orderUser %></strong>
-                                      <p id="order-info">đã đặt <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %></p>
-                                    </li>
-                                    <% }) %>
+                                      <li>
+                                        <strong id="order-user">
+                                          <%= orderDetail.orderUser %>
+                                        </strong>
+                                        <p id="order-info">đã đặt <%= orderDetail.foodTitle %> x
+                                            <%=orderDetail.foodPrice %>
+                                        </p>
+                                      </li>
+                                      <% }) %>
 
                                   </ol>
 
