@@ -138,7 +138,7 @@
 
                                 <!-- ORDER DETAIL -->
                                 <strong id="order-list-title">Order List</strong>
-                                <div class="order-list">
+                                <!-- <div class="order-list">
 
                                   <ol class="alternating-colors" id="display-order">
                                     <% orders.forEach((orderDetail)=> { %>
@@ -153,7 +153,14 @@
                                       <% }) %>
                                   </ol>
 
-                                </div>
+                                </div> -->
+                                <ol class="orders-list" id="display-order">
+                                  <% orders.forEach((orderDetail)=> { %>
+                                  <li>
+                                    <span id="order-info"><%= orderDetail.orderUser %> đã đặt <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %></span>
+                                  </li>
+                                  <% }) %>
+                                </ol>
                                 <!-- ORDER DETAIL -->
 
                               </div>
