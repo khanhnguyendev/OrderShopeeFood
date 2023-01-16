@@ -8,9 +8,9 @@ const showButton = document.getElementById('showDialog');
 const nameModal = document.getElementById('name-modal');
 const txtuserName = document.getElementById('userName');
 const confirmBtn = document.getElementById('confirmBtn');
-const { to, registerPlugin, set, timeline } = gsap
+// const { to, registerPlugin, set, timeline } = gsap
 
-gsap.registerPlugin(MorphSVGPlugin, Physics2DPlugin)
+// gsap.registerPlugin(MorphSVGPlugin, Physics2DPlugin)
 
 var orderDetail = '';
 var orderJson;
