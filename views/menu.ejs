@@ -88,10 +88,12 @@
 
                                   <ol class="alternating-colors" id="display-order">
 
-                                    <!-- <li>
-                                      <strong id="order-user">Half-Life 2</strong>
-                                      <p id="order-info">Fight aliens, wear a head crab, learn about gravity</p>
-                                    </li> -->
+                                    <% orders.forEach((orderDetail)=> { %>
+                                    <li>
+                                      <strong id="order-user"><%= orderDetail.orderUser %></strong>
+                                      <p id="order-info">đã đặt <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %></p>
+                                    </li>
+                                    <% }) %>
 
                                   </ol>
 

@@ -69,7 +69,8 @@ app.get('/:room', (req, res) => {
     if (menuJson.length < 3) {
       crawlerShopeeFood(req, res);
     } else {
-      res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson) })
+      let orderJson = fs.readFileSync(__dirname + "/data/orders.json");
+      res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson), orders : JSON.parse(orderJson) })
     }
   }
 
@@ -112,10 +113,10 @@ io.on('connection', socket => {
       // Error checking
       if (err) throw err;
       console.log("New order added: " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice);
-    });
 
-    // Send order to client
-    socket.emit('receive-order', null)
+      // Send order to client
+      io.emit('receive-order', orderDetail)
+    });
 
   })
 })
@@ -154,6 +155,7 @@ function crawlerShopeeFood(req, res) {
 
   let getData = html => {
     let foodsData = []
+    let ordersData = []
     const $ = cheerio.load(html);
     $('.item-restaurant-row').each((i, elem) => {
       let item = {
@@ -173,7 +175,7 @@ function crawlerShopeeFood(req, res) {
 
       console.log(shopUrl)
       console.log("Crawling data complete...")
-      res.render('menu', { roomName: req.params.room, foods: foodsData })
+      res.render('menu', { roomName: req.params.room, foods: foodsData, orders: ordersData})
     });
   }
 }

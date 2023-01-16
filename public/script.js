@@ -13,35 +13,6 @@ var orderDetail = '';
 var orderJson;
 var cookieUserName = getCookie('userName');
 
-// Polling to update data
-// setInterval(function () {
-//   fetch('/update', {
-//     method: 'get'
-//   }).then(function (response) {
-//     // UPDATE WEATHER HERE
-//     // const el = document.createElement('div')
-//     // let el1 = "<li>"
-//     // let el2 = "<strong id='order-user'>" + message.orderUser + "</strong>"
-//     // let el3 = "<p id='order-info'>" + "đã đặt " + message.foodTitle + " x " + message.foodPrice + "</p>"
-//     // let el4 = "</li>"
-//     // el.innerHTML = el1 + el2 + el3 + el4
-
-//     // orderContainer.appendChild(el)
-//     console.log(response)
-//   }).catch(function (err) {
-//     // Error :(
-//   });
-// }, 10000) // milliseconds
-
-async function fetchingJson() {
-  await fetch('http://localhost:3000/api/order')
-  .then((response) => response.json())
-  .then((orders) => {
-    orderJson = orders
-  })
-}
-
-
 function confirmUserName() {
   userName = txtuserName.value;
   document.getElementById("inputForm").style.display = "none";
@@ -53,49 +24,34 @@ function confirmUserName() {
 function setCookie(name, value, days) {
   var expires = "";
   if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + (days*24*60*60*1000));
-      expires = "; expires=" + date.toUTCString();
+    var date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
   }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
 function getCookie(name) {
   var nameEQ = name + "=";
   var ca = document.cookie.split(';');
-  for(var i=0;i < ca.length;i++) {
-      var c = ca[i];
-      while (c.charAt(0)==' ') c = c.substring(1,c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
   }
   return null;
 }
 
-function eraseCookie(name) {   
-  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+function eraseCookie(name) {
+  document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 if (cookieUserName == null) {
   document.getElementById("inputForm").style.display = "block";
 } else {
   document.getElementById("inputForm").style.display = "none";
-  setInterval(fetchingJson, 1000);
   socket.emit('old-user', roomName, cookieUserName)
 }
-
-// if (messageForm != null) {
-//   // let name = prompt('What is your name?')
-//   // let name = 'Test'
-//   // userName = name;
-//   appendLog('You joined')
-//   socket.emit('new-user', roomName, userName)
-
-//   messageForm.addEventListener('submit', e => {
-//     e.preventDefault()
-//     // appendMessage(orderDetail)
-//     // socket.emit('send-chat-message', roomName, userName, orderDetail)
-//   })
-// }
 
 // send food oder detail
 function sendOrder(event) {
@@ -130,21 +86,18 @@ socket.on('user-disconnected', name => {
   appendLog(`${name} disconnected`)
 })
 
-socket.on('receive-order', stream => {
-  for (const order of orderJson) {
-    appendMessage(order)
-  }
+socket.on('receive-order', orderDetail => {
+  appendMessage(orderDetail)
 })
 
-function appendMessage(order) {
-    const el = document.createElement('div')
-    let el1 = "<li>"
-    let el2 = "<strong id='order-user'>" + order.orderUser + "</strong>"
-    let el3 = "<p id='order-info'>" + "đã đặt " + order.foodTitle + " x " + order.foodPrice + "</p>"
-    let el4 = "</li>"
-    el.innerHTML = el1 + el2 + el3 + el4
-    orderContainer.appendChild(el)
-
+function appendMessage(orderDetail) {
+  const el = document.createElement('div')
+  let el1 = "<li>"
+  let el2 = "<strong id='order-user'>" + orderDetail.orderUser + "</strong>"
+  let el3 = "<p id='order-info'>" + "đã đặt " + orderDetail.foodTitle + " x " + orderDetail.foodPrice + "</p>"
+  let el4 = "</li>"
+  el.innerHTML = el1 + el2 + el3 + el4
+  orderContainer.appendChild(el)
 }
 
 function appendLog(log) {
