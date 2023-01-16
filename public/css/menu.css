@@ -260,6 +260,7 @@ ol {
 }
 
 ol span {
+  content: " ";
   position: relative;
   display: block;
   padding: .4em .4em .4em 2.5em;
@@ -273,10 +274,15 @@ ol span {
 
 ol span:hover {
   background: #E9E4E0;
+  text-decoration: line-through;
   cursor: pointer;
+  color: #ff0202;
 }
 
 ol span:hover:before {
+  content: "X";
+  color: rgb(255, 255, 255);
+  background: #ff0202;
   transform: rotate(360deg);
 }
 
