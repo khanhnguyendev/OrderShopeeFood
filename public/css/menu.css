@@ -100,11 +100,45 @@
 .button-order {
   --duration: 7s;
   --easing: linear;
-  --c-color-1: rgba(255, 163, 26, 0.7);
+  --c-color-1: rgba(26, 171, 255, 0.7);
   --c-color-2: #1A23FF;
   --c-color-3: #E21BDA;
   --c-color-4: rgba(255, 232, 26, 0.7);
-  --c-shadow: rgba(255, 223, 87, 0.5);
+  /* --c-shadow: rgba(255, 223, 87, 0.5);
+  --c-shadow-inset-top: rgba(255, 223, 52, 0.9);
+  --c-shadow-inset-bottom: rgba(255, 250, 215, 0.8);
+  --c-radial-inner: #FFD215;
+  --c-radial-outer: #FFF172; */
+  --c-color: #fff;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  outline: none;
+  position: relative;
+  cursor: pointer;
+  border: none;
+  display: table;
+  border-radius: 24px;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-family: "Inter";
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--c-color);
+  background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+  box-shadow: 0 0 14px var(--c-shadow);
+}
+
+.button-order:hover {
+  --duration: 3s;
+  --easing: linear;
+  --c-color-1: rgba(0, 255, 115, 0.7);
+  --c-color-2: #00f5fd;
+  --c-color-3: #E21BDA;
+  --c-color-4: rgba(255, 232, 26, 0.7);
+  --c-shadow: rgba(250, 111, 255, 0.5);
   --c-shadow-inset-top: rgba(255, 223, 52, 0.9);
   --c-shadow-inset-bottom: rgba(255, 250, 215, 0.8);
   --c-radial-inner: #FFD215;
@@ -130,6 +164,8 @@
   background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
   box-shadow: 0 0 14px var(--c-shadow);
 }
+
+
 .button-order:before {
   content: "";
   pointer-events: none;
