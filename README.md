@@ -1,5 +1,5 @@
 
-# ORDER GROUP SHOPEE FOOD
+# GROUP ORDER SHOPEE FOOD
 
 Using for order in group with your friends
 
