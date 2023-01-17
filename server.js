@@ -172,18 +172,18 @@ async function getResId() {
   fetch('https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=' + shopUrl.replace("https://shopeefood.vn/", ""), {
     method: 'GET',
     headers: {
-      'authority': 'gappapi.deliverynow.vn',
-      'accept': 'application/json, text/plain, */*',
-      'accept-language': 'en-US,en;q=0.9',
-      'origin': 'https://shopeefood.vn',
-      'referer': 'https://shopeefood.vn/',
-      'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-ch-ua-platform': '"Windows"',
-      'sec-fetch-dest': 'empty',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-site': 'cross-site',
-      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+      // 'authority': 'gappapi.deliverynow.vn',
+      // 'accept': 'application/json, text/plain, */*',
+      // 'accept-language': 'en-US,en;q=0.9',
+      // 'origin': 'https://shopeefood.vn',
+      // 'referer': 'https://shopeefood.vn/',
+      // 'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+      // 'sec-ch-ua-mobile': '?0',
+      // 'sec-ch-ua-platform': '"Windows"',
+      // 'sec-fetch-dest': 'empty',
+      // 'sec-fetch-mode': 'cors',
+      // 'sec-fetch-site': 'cross-site',
+      // 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
       'x-foody-access-token': '',
       'x-foody-api-version': '1',
       'x-foody-app-type': '1004',
@@ -209,7 +209,45 @@ async function getResId() {
 }
 
 async function getDeliveryDishes(deliveryInfo) {
-  console.log(deliveryInfo.reply.delivery_id)
+  let urlAPI = 'https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id' + deliveryInfo.reply.delivery_id
+  console.log('fetching ' + urlAPI)
+  fetch('https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=115812', {
+    method: 'GET',
+    headers: {
+      // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0',
+      // 'Accept': 'application/json, text/plain, */*',
+      // 'Accept-Language': 'en-US,en;q=0.5',
+      // 'Accept-Encoding': 'gzip, deflate, br',
+      'x-foody-client-id': '',
+      'x-foody-client-type': '1',
+      'x-foody-app-type': '1004',
+      'x-foody-client-version': '3.0.0',
+      'x-foody-api-version': '1',
+      'x-foody-client-language': 'vi',
+      'x-foody-access-token': '6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b'
+      // 'Origin': 'https://shopeefood.vn',
+      // 'Connection': 'keep-alive',
+      // 'Referer': 'https://shopeefood.vn/',
+      // 'Sec-Fetch-Dest': 'empty',
+      // 'Sec-Fetch-Mode': 'cors',
+      // 'Sec-Fetch-Site': 'cross-site',
+      // 'TE': 'trailers'
+    }
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not OK');
+      }
+      return response.json()
+    })
+    .then((data) => {
+      logWriter(DEBUG, 'Get delivery detail successful:');
+      logWriter(DEBUG, JSON.stringify(data))
+    })
+    .catch((error) => {
+      logWriter(DEBUG, 'There has been a problem with your fetch operation');
+      logWriter(DEBUG, 'getDeliveryDishes ' + error)
+    });
 }
 
 // /**
