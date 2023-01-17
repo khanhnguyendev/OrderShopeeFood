@@ -169,7 +169,7 @@ function crawlerShopeeFood() {
  * Get Restaurant ID
  */
 async function getResId() {
-  fetch('https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=ho-chi-minh/con-soi-sua-tuoi-tran-chau-duong-den-nguyen-dinh-chieu', {
+  fetch('https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=' + shopUrl.replace("https://shopeefood.vn/", ""), {
     method: 'GET',
     headers: {
       'authority': 'gappapi.deliverynow.vn',
@@ -193,8 +193,23 @@ async function getResId() {
       'x-foody-client-version': '3.0.0'
     },
   })
-    .then(response => response.json())
-    .then(response => console.log(JSON.stringify(response)))
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not OK');
+      }
+      return response.json()
+    })
+    .then((data) => {
+      logWriter(DEBUG, 'Get delivery info successful: ' + JSON.stringify(data));
+      getDeliveryDishes(data)
+    })
+    .catch((error) => {
+      logWriter(DEBUG, 'There has been a problem with your fetch operation' + error);
+    });
+}
+
+async function getDeliveryDishes(deliveryInfo) {
+  console.log(deliveryInfo.reply.delivery_id)
 }
 
 // /**
