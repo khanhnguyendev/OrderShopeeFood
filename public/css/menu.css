@@ -38,8 +38,8 @@
   width 0.3s 0.1s input: focus ~ .border
 }
 
-.popup input[type="submit"] {
-  width: 160px;
+#confirmBtn {
+  width: 170px;
   background: none;
   display: block;
   margin: 20px auto;
@@ -53,7 +53,7 @@
   cursor: pointer;
 }
 
-.popup input[type="submit"]:hover {
+#confirmBtn:hover {
   background: #2ecc71;
 }
 
@@ -76,21 +76,6 @@
   height: 40px;
   transition: all 0.3s;
   cursor: pointer;
-}
-
-#userName {
-  border-radius: 20px;
-}
-
-.popup .button-yes {
-  background-color: #31d2e7;
-  color: #FFF;
-  margin-bottom: 10px;
-}
-
-.popup .button-yes:hover {
-  background-image: none;
-  background-color: #aa31e7;
 }
 
 /** ORDER LIST */
