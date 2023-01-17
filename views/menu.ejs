@@ -103,22 +103,6 @@
 
                                 <!-- ORDER DETAIL -->
                                 <strong id="order-list-title">Order List</strong>
-                                <!-- <div class="order-list">
-
-                                  <ol class="alternating-colors" id="display-order">
-                                    <% orders.forEach((orderDetail)=> { %>
-                                      <li>
-                                        <strong id="order-user">
-                                          <%= orderDetail.orderUser %>
-                                        </strong>
-                                        <p id="order-info">đã đặt <%= orderDetail.foodTitle %> x
-                                            <%=orderDetail.foodPrice %>
-                                        </p>
-                                      </li>
-                                      <% }) %>
-                                  </ol>
-
-                                </div> -->
                                 <ol class="orders-list" id="display-order">
                                   <% orders.forEach((orderDetail)=> { %>
                                   <li>
@@ -127,7 +111,7 @@
                                   <% }) %>
                                 </ol>
                                 <!-- ORDER DETAIL -->
-
+                                
                               </div>
                             </div>
                           </div>
@@ -159,30 +143,12 @@
           </section>
 
           <!-- POPUP Define User Name -->
-          <!-- <div class="text-wrapper" id="popup-username" style="display: none;">
-            <h3>What should i call you?</h3>
-            <p><input type="text" id="userName" required></p>
-            <button class="button button-yes" id="confirmBtn" onclick="confirmUserName()"> Yes, please!</button>
-          </div> -->
           <div class="popup" id="popup-username" style="display: none;">
             <h2>What should i call you?</h2>
             <input id="userName" type="text" placeholder="Your Name" required>
             <input id="confirmBtn" onclick="confirmUserName()" value="Yes, please!">
           </div>
 
-          <!-- <section class="u-backlink u-clearfix u-grey-80">
-            <a class="u-link" href="https://github.com/khanhnguyendev/OrderShopeeFood" target="_blank">
-              <span>
-                OrderShopeeFood
-              </span>
-            </a>
-            <p class="u-text">
-              <span>created by</span>
-            </p>
-            <a class="u-link" href="" target="_blank">
-              <span>khanhnguyendev</span>
-            </a>.
-          </section> -->
         </div>
       </form>
 
