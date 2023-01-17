@@ -1,4 +1,5 @@
 const express = require('express')
+const https = require('https');
 const app = express()
 const server = require('http').Server(app)
 const port = '3000';
@@ -160,48 +161,83 @@ function logWriter(type, message) {
   console.log(getDateTime(type) + message)
 }
 
-/**
-* Crawling data shopee food
-*/
-function crawlerShopeeFood(req, res) {
-  const nightmare = Nightmare({ show: false })
-  nightmare
-    .goto(shopUrl)
-    .wait('body')
-    .wait('.menu-restaurant-list')
-    .evaluate(() => document.querySelector('div#restaurant-item').innerHTML)
-    .end()
-    .then(response => {
-      getData(response);
-    }).catch(err => {
-      logWriter(DEBUG, err);
-    });
-
-  let getData = html => {
-    let foodsData = []
-    let ordersData = []
-    const $ = cheerio.load(html);
-    $('.item-restaurant-row').each((i, elem) => {
-      let item = {
-        title: $(elem).find('.item-restaurant-info > .item-restaurant-name').text(),
-        image: $(elem).find('img').attr('src'),
-        des: $(elem).find('div.item-restaurant-desc').text(),
-        price: $(elem).find('div.current-price').text()
-      }
-      foodsData.push(item)
-    })
-
-    fs.writeFile(__dirname + "/data/menu.json", JSON.stringify(foodsData), 'utf8', function (err) {
-      if (err) {
-        logWriter(DEBUG, "An error occured while writing JSON Object to File.");
-        return logWriter(err);
-      }
-
-      logWriter(DEBUG, shopUrl)
-      logWriter(DEBUG, "Crawling data complete...")
-
-      // Render HTML
-      res.render('menu', { roomName: req.params.room, foods: foodsData, orders: ordersData })
-    });
-  }
+function crawlerShopeeFood() {
+  getResId()
 }
+
+/**
+ * Get Restaurant ID
+ */
+async function getResId() {
+  fetch('https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=ho-chi-minh/con-soi-sua-tuoi-tran-chau-duong-den-nguyen-dinh-chieu', {
+    method: 'GET',
+    headers: {
+      'authority': 'gappapi.deliverynow.vn',
+      'accept': 'application/json, text/plain, */*',
+      'accept-language': 'en-US,en;q=0.9',
+      'origin': 'https://shopeefood.vn',
+      'referer': 'https://shopeefood.vn/',
+      'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+      'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-platform': '"Windows"',
+      'sec-fetch-dest': 'empty',
+      'sec-fetch-mode': 'cors',
+      'sec-fetch-site': 'cross-site',
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+      'x-foody-access-token': '',
+      'x-foody-api-version': '1',
+      'x-foody-app-type': '1004',
+      'x-foody-client-id': '',
+      'x-foody-client-language': 'en',
+      'x-foody-client-type': '1',
+      'x-foody-client-version': '3.0.0'
+    },
+  })
+    .then(response => response.json())
+    .then(response => console.log(JSON.stringify(response)))
+}
+
+// /**
+// * Crawling data shopee food
+// */
+// function crawlerShopeeFood() {
+//   const nightmare = Nightmare({ show: false })
+//   nightmare
+//     .goto(shopUrl)
+//     .wait('body')
+//     .wait('.menu-restaurant-list')
+//     .evaluate(() => document.querySelector('div#restaurant-item').innerHTML)
+//     .end()
+//     .then(response => {
+//       getData(response);
+//     }).catch(err => {
+//       logWriter(DEBUG, err);
+//     });
+
+//   let getData = html => {
+//     let foodsData = []
+//     let ordersData = []
+//     const $ = cheerio.load(html);
+//     $('.item-restaurant-row').each((i, elem) => {
+//       let item = {
+//         title: $(elem).find('.item-restaurant-info > .item-restaurant-name').text(),
+//         image: $(elem).find('img').attr('src'),
+//         des: $(elem).find('div.item-restaurant-desc').text(),
+//         price: $(elem).find('div.current-price').text()
+//       }
+//       foodsData.push(item)
+//     })
+
+//     fs.writeFile(__dirname + "/data/menu.json", JSON.stringify(foodsData), 'utf8', function (err) {
+//       if (err) {
+//         logWriter(DEBUG, "An error occured while writing JSON Object to File.");
+//         return logWriter(err);
+//       }
+//       logWriter(DEBUG, shopUrl)
+//       logWriter(DEBUG, "Crawling data complete...")
+
+//       // Render HTML
+//       res.render('menu', { roomName: req.params.room, foods: foodsData, orders: ordersData })
+//     });
+//   }
+// }
