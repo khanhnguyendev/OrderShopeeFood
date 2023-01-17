@@ -136,21 +136,21 @@ function getUserRooms(socket) {
 /**
 * Get Date Time
 */
-function getDateTime(type) {
+function getDateTime() {
   var currentDate = new Date();
   return "[" + String(currentDate.getDate()).padStart(2, '0') + "/"
     + String((currentDate.getMonth() + 1)).padStart(2, '0') + "/"
     + currentDate.getFullYear() + " @ "
     + String(currentDate.getHours()).padStart(2, '0') + ":"
     + String(currentDate.getMinutes()).padStart(2, '0') + ":"
-    + String(currentDate.getSeconds()).padStart(2, '0') + " --- " + type + "] ";
+    + String(currentDate.getSeconds()).padStart(2, '0');
 }
 
 /**
  * Log Writer
  */
 function logWriter(type, message) {
-  console.log(getDateTime(type) + message)
+  console.log(getDateTime() + " ---" + type + "---]" + message)
 }
 
 async function fetchShopeeFood(req, res) {
@@ -192,11 +192,12 @@ async function getResId(req, res) {
       return response.json()
     })
     .then((data) => {
-      logWriter(DEBUG, 'Get delivery info successful: ' + JSON.stringify(data));
+      logWriter(DEBUG, 'Get delivery info successful');
       getDeliveryDishes(data, req, res)
     })
     .catch((error) => {
       logWriter(DEBUG, 'There has been a problem with your fetch operation' + error);
+      logWriter(DEBUG, 'getResId ' + error)
     });
 }
 
@@ -232,7 +233,7 @@ async function getDeliveryDishes(deliveryInfo, req, res) {
       return response.json()
     })
     .then((json) => {
-      logWriter(DEBUG, 'Get delivery detail successful:');
+      logWriter(DEBUG, 'Get delivery detail successful');
       // Filter menu list
       getMenuJson(json, req, res)
     })
