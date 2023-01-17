@@ -96,7 +96,7 @@ socket.on('receive-order', orderDetail => {
 function appendMessage(orderDetail) {
   const el = document.createElement('div')
   let el1 = "<li>"
-  let el2 = "<span id='order-info'>" + orderDetail.orderUser + "đã đặt" + orderDetail.foodTitle + " x " + orderDetail.foodPrice + "</span>"
+  let el2 = "<span id='order-info'>" + orderDetail.orderUser + " đã đặt " + orderDetail.foodTitle + " x " + orderDetail.foodPrice + "</span>"
   let el3 = "</li>"
   el.innerHTML = el1 + el2 + el3
   orderContainer.appendChild(el)
