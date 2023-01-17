@@ -61,7 +61,7 @@ app.get('/:room', (req, res) => {
       fetchShopeeFood(req, res);
     } else {
       let orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
-      res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
+      res.render('room', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
     }
   }
 
@@ -274,5 +274,5 @@ function saveMenuJson(menuJson, req, res) {
     
   });
   
-  res.render('menu', { roomName: req.params.room, foods: menuJson, orders: ordersData })
+  res.render('room', { roomName: req.params.room, foods: menuJson, orders: ordersData })
 }
