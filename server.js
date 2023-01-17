@@ -52,26 +52,6 @@ app.post('/room', (req, res) => {
   io.emit('room-created', req.body.orderShopName)
 })
 
-app.get('/api/order', (req, res) => {
-  // let order = fs.readFileSync(__dirname + "/dataJSON/menu.json");
-  // let orderJson = JSON.parse(order)
-  let obj;
-  let orders = [];
-  fs.readFile(__dirname + "/dataJSON/orders.json", 'utf8', function (err, data) {
-    if (err) throw err;
-    obj = JSON.parse(data);
-    logWriter(DATA, obj);
-
-    for (let i = 0; i < obj.length; i++) {
-      let ob = obj[i];
-      orders.push(ob)
-    }
-
-    res.setHeader('Content-Type', 'application/json');
-    res.json(orders);
-  });
-})
-
 app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
@@ -296,49 +276,3 @@ function saveMenuJson(menuJson, req, res) {
   
   res.render('menu', { roomName: req.params.room, foods: menuJson, orders: ordersData })
 }
-
-
-// /**
-// * Crawling data shopee food
-// */
-// function crawlerShopeeFood() {
-//   const nightmare = Nightmare({ show: false })
-//   nightmare
-//     .goto(shopUrl)
-//     .wait('body')
-//     .wait('.menu-restaurant-list')
-//     .evaluate(() => document.querySelector('div#restaurant-item').innerHTML)
-//     .end()
-//     .then(response => {
-//       getData(response);
-//     }).catch(err => {
-//       logWriter(DEBUG, err);
-//     });
-
-//   let getData = html => {
-//     let foodsData = []
-//     let ordersData = []
-//     const $ = cheerio.load(html);
-//     $('.item-restaurant-row').each((i, elem) => {
-//       let item = {
-//         title: $(elem).find('.item-restaurant-info > .item-restaurant-name').text(),
-//         image: $(elem).find('img').attr('src'),
-//         des: $(elem).find('div.item-restaurant-desc').text(),
-//         price: $(elem).find('div.current-price').text()
-//       }
-//       foodsData.push(item)
-//     })
-
-//     fs.writeFile(__dirname + "/dataJSON/menu.json", JSON.stringify(foodsData), 'utf8', function (err) {
-//       if (err) {
-//         logWriter(DEBUG, "An error occured while writing JSON Object to File.");
-//         return logWriter(err);
-//       }
-//       logWriter(DEBUG, shopUrl)
-//       logWriter(DEBUG, "Crawling data complete...")
-
-//       // Render HTML
-//       res.render('menu', { roomName: req.params.room, foods: foodsData, orders: ordersData })
-//     });
-//   }
-// }
