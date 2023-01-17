@@ -191,14 +191,18 @@
               </div>
             </div>
 
-
-
           </section>
 
-          <div class="text-wrapper" id="inputForm" style="display: none;">
+          <!-- POPUP Define User Name -->
+          <!-- <div class="text-wrapper" id="popup-username" style="display: none;">
             <h3>What should i call you?</h3>
-            <p><input type="text" value="" id="userName"></p>
+            <p><input type="text" id="userName" required></p>
             <button class="button button-yes" id="confirmBtn" onclick="confirmUserName()"> Yes, please!</button>
+          </div> -->
+          <div class="popup" id="popup-username" style="display: none;">
+            <h2>What should i call you?</h2>
+            <input id="userName" type="text" placeholder="Your Name" required>
+            <input id="create-room" type="submit" value="Yes, please!">
           </div>
 
           <!-- <section class="u-backlink u-clearfix u-grey-80">

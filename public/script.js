@@ -18,7 +18,7 @@ var cookieUserName = getCookie('userName');
 
 function confirmUserName() {
   userName = txtuserName.value;
-  document.getElementById("inputForm").style.display = "none";
+  document.getElementById("popup-username").style.display = "none";
   setCookie('userName', userName, 1);
   appendLog('You joined')
   socket.emit('new-user', roomName, userName)
@@ -50,9 +50,9 @@ function eraseCookie(name) {
 }
 
 if (cookieUserName == null) {
-  document.getElementById("inputForm").style.display = "block";
+  document.getElementById("popup-username").style.display = "block";
 } else {
-  document.getElementById("inputForm").style.display = "none";
+  document.getElementById("popup-username").style.display = "none";
   socket.emit('old-user', roomName, cookieUserName)
 }
 

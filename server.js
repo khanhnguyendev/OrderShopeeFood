@@ -31,11 +31,11 @@ app.post('/room', (req, res) => {
   }
   // Clear menu before create new room
   fs.writeFile(__dirname + "/data/menu.json", '[]', function () {
-    logWriter(DEBUG, 'Menu has been reset')
+    logWriter(DATA, 'Menu has been reset')
   })
   // Clear order log before create new room
   fs.writeFile(__dirname + "/data/orders.json", '[]', function () {
-    logWriter(DEBUG, 'Order log has been cleared')
+    logWriter(DATA, 'Order log has been cleared')
   })
   rooms[req.body.orderShopName] = { users: {} }
   shopUrl = req.body.orderShopUrl;
