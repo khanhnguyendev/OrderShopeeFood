@@ -6,7 +6,10 @@ const io = require('socket.io')(server)
 const Nightmare = require('nightmare')
 const cheerio = require('cheerio');
 const fs = require('fs');
-const { events } = require('socket.io/lib/namespace');
+const CONNECTION = 'CONNECTION'
+const DATA = 'DATA'
+const DEBUG = 'DEBUG'
+
 
 let shopUrl = '';
 
@@ -28,11 +31,11 @@ app.post('/room', (req, res) => {
   }
   // Clear menu before create new room
   fs.writeFile(__dirname + "/data/menu.json", '[]', function () {
-    console.log('Menu has been reset')
+    logWriter(DEBUG, 'Menu has been reset')
   })
   // Clear order log before create new room
   fs.writeFile(__dirname + "/data/orders.json", '[]', function () {
-    console.log('Order log has been cleared')
+    logWriter(DEBUG, 'Order log has been cleared')
   })
   rooms[req.body.orderShopName] = { users: {} }
   shopUrl = req.body.orderShopUrl;
@@ -49,8 +52,8 @@ app.get('/api/order', (req, res) => {
   fs.readFile(__dirname + "/data/orders.json", 'utf8', function (err, data) {
     if (err) throw err;
     obj = JSON.parse(data);
-    console.log(obj);
-    
+    logWriter(DATA, obj);
+
     for (let i = 0; i < obj.length; i++) {
       let ob = obj[i];
       orders.push(ob)
@@ -70,7 +73,7 @@ app.get('/:room', (req, res) => {
       crawlerShopeeFood(req, res);
     } else {
       let orderJson = fs.readFileSync(__dirname + "/data/orders.json");
-      res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson), orders : JSON.parse(orderJson) })
+      res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
     }
   }
 
@@ -82,19 +85,20 @@ io.on('connection', socket => {
     socket.join(room)
     rooms[room].users[socket.id] = name
     socket.to(room).broadcast.emit('user-connected', name)
-    console.log('[' + Date.now() + ']' + name + ' connected to ' + room)
+    logWriter(CONNECTION, name + ' connected to ' + room)
   })
 
   socket.on('old-user', (room, name) => {
     socket.join(room)
     rooms[room].users[socket.id] = name
     socket.to(room).broadcast.emit('user-connected', name)
-    console.log('[' + Date.now() + ']' + name + ' connected to ' + room)
+    logWriter(CONNECTION, name + ' connected to ' + room)
   })
 
   socket.on('disconnect', () => {
     getUserRooms(socket).forEach(room => {
       socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id])
+      logWriter(CONNECTION, rooms[room].users[socket.id] + ' disconnect to ' + room)
       delete rooms[room].users[socket.id]
     })
   })
@@ -112,7 +116,7 @@ io.on('connection', socket => {
     fs.writeFile(__dirname + "/data/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
       // Error checking
       if (err) throw err;
-      console.log("New order added: " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice);
+      logWriter(DATA, "New order added: " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice);
 
       // Send order to client
       io.emit('receive-order', orderDetail)
@@ -122,8 +126,8 @@ io.on('connection', socket => {
 })
 
 server.listen(port, function () {
-  console.log("Server is running ");
-  console.log("http://localhost:" + port);
+  logWriter(DEBUG, "Server is running ");
+  logWriter(DEBUG, "http://localhost:" + port);
 });
 
 /**
@@ -134,6 +138,26 @@ function getUserRooms(socket) {
     if (room.users[socket.id] != null) names.push(name)
     return names
   }, [])
+}
+
+/**
+* Get Date
+*/
+function getDate(type) {
+  var currentdate = new Date();
+  return "[" + currentdate.getDate() + "/"
+    + (currentdate.getMonth() + 1) + "/"
+    + currentdate.getFullYear() + " @ "
+    + currentdate.getHours() + ":"
+    + currentdate.getMinutes() + ":"
+    + currentdate.getSeconds() + " --- " + type + "] ";
+}
+
+/**
+ * Log Writer
+ */
+function logWriter(type, message) {
+  console.log(getDate(type) + message)
 }
 
 /**
@@ -150,7 +174,7 @@ function crawlerShopeeFood(req, res) {
     .then(response => {
       getData(response);
     }).catch(err => {
-      console.log(err);
+      logWriter(DEBUG, err);
     });
 
   let getData = html => {
@@ -169,13 +193,15 @@ function crawlerShopeeFood(req, res) {
 
     fs.writeFile(__dirname + "/data/menu.json", JSON.stringify(foodsData), 'utf8', function (err) {
       if (err) {
-        console.log("An error occured while writing JSON Object to File.");
-        return console.log(err);
+        logWriter(DEBUG, "An error occured while writing JSON Object to File.");
+        return logWriter(err);
       }
 
-      console.log(shopUrl)
-      console.log("Crawling data complete...")
-      res.render('menu', { roomName: req.params.room, foods: foodsData, orders: ordersData})
+      logWriter(DEBUG, shopUrl)
+      logWriter(DEBUG, "Crawling data complete...")
+
+      // Render HTML
+      res.render('menu', { roomName: req.params.room, foods: foodsData, orders: ordersData })
     });
   }
 }
