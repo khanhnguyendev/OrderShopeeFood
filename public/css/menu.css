@@ -842,6 +842,10 @@ ol span:before {
   margin: 1.5rem 0 0 0;
 }
 
+.disable-event {
+  z-index: -1;
+}
+
 .u-section-1 .u-text-1 {
   width: 707px;
 }

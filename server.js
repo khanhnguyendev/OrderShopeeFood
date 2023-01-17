@@ -116,7 +116,7 @@ io.on('connection', socket => {
     fs.writeFile(__dirname + "/data/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
       // Error checking
       if (err) throw err;
-      logWriter(DATA, "New order added: " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice);
+      logWriter(DATA, "[New order added] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
 
       // Send order to client
       io.emit('receive-order', orderDetail)
@@ -141,23 +141,23 @@ function getUserRooms(socket) {
 }
 
 /**
-* Get Date
+* Get Date Time
 */
-function getDate(type) {
-  var currentdate = new Date();
-  return "[" + currentdate.getDate() + "/"
-    + (currentdate.getMonth() + 1) + "/"
-    + currentdate.getFullYear() + " @ "
-    + currentdate.getHours() + ":"
-    + currentdate.getMinutes() + ":"
-    + currentdate.getSeconds() + " --- " + type + "] ";
+function getDateTime(type) {
+  var currentDate = new Date();
+  return "[" + String(currentDate.getDate()).padStart(2, '0') + "/"
+    + String((currentDate.getMonth() + 1)).padStart(2, '0') + "/"
+    + currentDate.getFullYear() + " @ "
+    + String(currentDate.getHours()).padStart(2, '0') + ":"
+    + String(currentDate.getMinutes()).padStart(2, '0') + ":"
+    + String(currentDate.getSeconds()).padStart(2, '0') + " --- " + type + "] ";
 }
 
 /**
  * Log Writer
  */
 function logWriter(type, message) {
-  console.log(getDate(type) + message)
+  console.log(getDateTime(type) + message)
 }
 
 /**

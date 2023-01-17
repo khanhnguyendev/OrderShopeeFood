@@ -10,12 +10,14 @@
   <link rel="stylesheet" href="/css/nicepage.css" media="screen">
   <link rel="stylesheet" href="/css/menu.css" media="screen">
   <link rel="stylesheet" href="/css/bg.css">
+  <link rel="stylesheet" href="/css/toastr.min.css">
 
   <script defer src="http://192.168.33.21:3000/socket.io/socket.io.js"></script>
   <script defer src="/script/jquery.js" ></script>
   <script defer src="/script/nicepage.js"></script>
   <script defer src="/script/script.js"></script>
   <script defer src="/script/background.js"></script>
+  <script defer src="/script/toastr.min.js"></script>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
   <script src="https://assets.codepen.io/16327/MorphSVGPlugin3.min.js"></script>
   <script src="https://assets.codepen.io/16327/Physics2DPlugin3.min.js"></script> -->
@@ -23,7 +25,6 @@
   <script>
     const roomName = "<%= roomName %>"
   </script>
-  <meta name="generator" content="Nicepage 5.2.4, nicepage.com">
   <link id="u-theme-google-font" rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
   <link id="u-page-google-font" rel="stylesheet"
@@ -159,7 +160,7 @@
                                 <ol class="orders-list" id="display-order">
                                   <% orders.forEach((orderDetail)=> { %>
                                   <li>
-                                    <span id="order-info"><%= orderDetail.orderUser %> đã đặt <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %></span>
+                                    <span id="order-info"><%= orderDetail.orderUser %> đã đặt <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %> [<%=orderDetail.orderTime %>]</span>
                                   </li>
                                   <% }) %>
                                 </ol>
