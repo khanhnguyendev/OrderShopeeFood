@@ -10,6 +10,8 @@ const txtuserName = document.getElementById('userName');
 const confirmBtn = document.getElementById('confirmBtn');
 const TOASTR_ERROR = 'error'
 const TOASTR_SUCCESS = 'success'
+const ORDER_ERROR = '400'
+const ORDER_SUCCESS = '200'
 // const { to, registerPlugin, set, timeline } = gsap
 
 // gsap.registerPlugin(MorphSVGPlugin, Physics2DPlugin)
@@ -55,7 +57,7 @@ function eraseCookie(name) {
 /**
  * Display popup define username
  */
-if (cookieUserName == null) {
+if (cookieUserName == null || cookieUserName.length < 1) {
     document.getElementById("popup-username").style.display = "block";
     document.getElementById("carousel_329e").classList.add('disable-event');
 } else {
