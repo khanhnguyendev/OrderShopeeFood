@@ -100,14 +100,16 @@ function getCurrentTime() {
  */
 function sendOrder(event) {
 
-    if (getCookie('userName') === null) {
+    let userName = getCookie('userName')
+
+    if (userName === null || userName.length < 1) {
         // User name undefined
         return notify(TOASTR_ERROR, 'Username undefined', 'Please check cookies!')
     }
 
     orderDetail = {
         roomName: roomName,
-        orderUser: getCookie('userName'),
+        orderUser: userName,
         foodTitle: event.getAttribute('data-title'),
         foodPrice: event.getAttribute('data-price'),
         orderTime: getCurrentTime()

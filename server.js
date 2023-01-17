@@ -96,19 +96,24 @@ io.on('connection', socket => {
    */
   socket.on('send-order', (orderDetail) => {
 
-    // Saving order detail to file
-    orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
-    let ordersJson = JSON.parse(orders);
-    ordersJson.push(orderDetail);
-
-    fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
-      // Error checking
-      if (err) throw err;
-      logWriter(DATA, "[New order added] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
-
-      // Send order to client
-      io.emit('receive-order', orderDetail)
-    });
+    // Validate Order User
+    if (orderDetail.orderUser === null || orderDetail.orderUser.length < 1) {
+      // Order failed
+    } else {
+      // Saving order detail to file
+      orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+      let ordersJson = JSON.parse(orders);
+      ordersJson.push(orderDetail);
+  
+      fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
+        // Error checking
+        if (err) throw err;
+        logWriter(DATA, "[New order added] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
+  
+        // Send order to client
+        io.emit('receive-order', orderDetail)
+      });
+    }
 
   })
 })
