@@ -26,21 +26,28 @@ app.get('/', (req, res) => {
 })
 
 app.post('/room', (req, res) => {
-  // Create room with shop URL
+
+  // Handle url not available
   if (rooms[req.body.orderShopName] != null) {
     return res.redirect('/')
   }
+
   // Clear menu before create new room
   fs.writeFile(__dirname + "/dataJSON/menu.json", '[]', function () {
     logWriter(DATA, 'Menu has been reset')
   })
+
   // Clear order log before create new room
   fs.writeFile(__dirname + "/dataJSON/orders.json", '[]', function () {
     logWriter(DATA, 'Order log has been cleared')
   })
   rooms[req.body.orderShopName] = { users: {} }
+
+  // Get shop url
   shopUrl = req.body.orderShopUrl;
+
   res.redirect(req.body.orderShopName)
+
   // Send message that new room was created
   io.emit('room-created', req.body.orderShopName)
 })
@@ -71,7 +78,7 @@ app.get('/:room', (req, res) => {
   } else {
     let menuJson = fs.readFileSync(__dirname + "/dataJSON/menu.json");
     if (menuJson.length < 3) {
-      crawlerShopeeFood(req, res);
+      fetchShopeeFood(req, res);
     } else {
       let orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
       res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
@@ -161,15 +168,15 @@ function logWriter(type, message) {
   console.log(getDateTime(type) + message)
 }
 
-function crawlerShopeeFood() {
-  getResId()
+async function fetchShopeeFood(req, res) {
+  getResId(req, res)
 }
 
 /**
  * Get Restaurant ID
  */
-async function getResId() {
-  fetch('https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=' + shopUrl.replace("https://shopeefood.vn/", ""), {
+async function getResId(req, res) {
+  return fetch('https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=' + shopUrl.replace("https://shopeefood.vn/", ""), {
     method: 'GET',
     headers: {
       // 'authority': 'gappapi.deliverynow.vn',
@@ -201,17 +208,16 @@ async function getResId() {
     })
     .then((data) => {
       logWriter(DEBUG, 'Get delivery info successful: ' + JSON.stringify(data));
-      getDeliveryDishes(data)
+      getDeliveryDishes(data, req, res)
     })
     .catch((error) => {
       logWriter(DEBUG, 'There has been a problem with your fetch operation' + error);
     });
 }
 
-async function getDeliveryDishes(deliveryInfo) {
-  let urlAPI = 'https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id' + deliveryInfo.reply.delivery_id
-  console.log('fetching ' + urlAPI)
-  fetch('https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=115812', {
+async function getDeliveryDishes(deliveryInfo, req, res) {
+  let urlAPI = 'https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=' + deliveryInfo.reply.delivery_id
+  fetch(urlAPI, {
     method: 'GET',
     headers: {
       // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0',
@@ -240,15 +246,57 @@ async function getDeliveryDishes(deliveryInfo) {
       }
       return response.json()
     })
-    .then((data) => {
+    .then((json) => {
       logWriter(DEBUG, 'Get delivery detail successful:');
-      logWriter(DEBUG, JSON.stringify(data))
+      // Filter menu list
+      getMenuJson(json, req, res)
     })
     .catch((error) => {
       logWriter(DEBUG, 'There has been a problem with your fetch operation');
       logWriter(DEBUG, 'getDeliveryDishes ' + error)
     });
 }
+
+/**
+ * Get menu list 
+ */
+function getMenuJson(json, req, res) {
+  let menuJson = []
+  json.reply.menu_infos.forEach((menuInfo) => {
+    menuInfo.dishes.forEach((dish) => {
+      let menu = {
+        title: dish.name,
+        image: dish.photos[1].value,
+        des: dish.description,
+        price: dish.price.text
+      }
+      menuJson.push(menu)
+    })
+  })
+
+  // Write to file
+  saveMenuJson(menuJson, req, res)
+}
+
+/**
+ * Saving menu list to file
+ */
+function saveMenuJson(menuJson, req, res) {
+
+  let ordersData = []
+
+  fs.writeFile(__dirname + "/dataJSON/menu.json", JSON.stringify(menuJson), 'utf8', function (err) {
+    if (err) {
+      logWriter(DEBUG, "An error occured while writing JSON Object to File.");
+      return logWriter(err);
+    }
+    logWriter(DEBUG, "Saving menu JSON complete...")
+    
+  });
+  
+  res.render('menu', { roomName: req.params.room, foods: menuJson, orders: ordersData })
+}
+
 
 // /**
 // * Crawling data shopee food
