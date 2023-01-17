@@ -31,11 +31,11 @@ app.post('/room', (req, res) => {
     return res.redirect('/')
   }
   // Clear menu before create new room
-  fs.writeFile(__dirname + "/data/menu.json", '[]', function () {
+  fs.writeFile(__dirname + "/dataJSON/menu.json", '[]', function () {
     logWriter(DATA, 'Menu has been reset')
   })
   // Clear order log before create new room
-  fs.writeFile(__dirname + "/data/orders.json", '[]', function () {
+  fs.writeFile(__dirname + "/dataJSON/orders.json", '[]', function () {
     logWriter(DATA, 'Order log has been cleared')
   })
   rooms[req.body.orderShopName] = { users: {} }
@@ -46,11 +46,11 @@ app.post('/room', (req, res) => {
 })
 
 app.get('/api/order', (req, res) => {
-  // let order = fs.readFileSync(__dirname + "/data/menu.json");
+  // let order = fs.readFileSync(__dirname + "/dataJSON/menu.json");
   // let orderJson = JSON.parse(order)
   let obj;
   let orders = [];
-  fs.readFile(__dirname + "/data/orders.json", 'utf8', function (err, data) {
+  fs.readFile(__dirname + "/dataJSON/orders.json", 'utf8', function (err, data) {
     if (err) throw err;
     obj = JSON.parse(data);
     logWriter(DATA, obj);
@@ -69,11 +69,11 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   } else {
-    let menuJson = fs.readFileSync(__dirname + "/data/menu.json");
+    let menuJson = fs.readFileSync(__dirname + "/dataJSON/menu.json");
     if (menuJson.length < 3) {
       crawlerShopeeFood(req, res);
     } else {
-      let orderJson = fs.readFileSync(__dirname + "/data/orders.json");
+      let orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
       res.render('menu', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
     }
   }
@@ -110,11 +110,11 @@ io.on('connection', socket => {
   socket.on('send-order', (orderDetail) => {
 
     // Saving order detail to file
-    orders = fs.readFileSync(__dirname + "/data/orders.json");
+    orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
     let ordersJson = JSON.parse(orders);
     ordersJson.push(orderDetail);
 
-    fs.writeFile(__dirname + "/data/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
+    fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
       // Error checking
       if (err) throw err;
       logWriter(DATA, "[New order added] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
@@ -281,7 +281,7 @@ async function getDeliveryDishes(deliveryInfo) {
 //       foodsData.push(item)
 //     })
 
-//     fs.writeFile(__dirname + "/data/menu.json", JSON.stringify(foodsData), 'utf8', function (err) {
+//     fs.writeFile(__dirname + "/dataJSON/menu.json", JSON.stringify(foodsData), 'utf8', function (err) {
 //       if (err) {
 //         logWriter(DEBUG, "An error occured while writing JSON Object to File.");
 //         return logWriter(err);
