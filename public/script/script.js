@@ -117,9 +117,6 @@ function sendOrder(event) {
 
     // submit order
     socket.emit('send-order', orderDetail)
-
-    // success
-    notify(TOASTR_SUCCESS, 'Order Success', event.getAttribute('data-title') + ' has been added')
 }
 
 socket.on('room-created', room => {
@@ -143,8 +140,19 @@ socket.on('user-disconnected', name => {
     appendLog(`${name} disconnected`)
 })
 
+/**
+ * Handle Order Status & Display Order
+ */
 socket.on('receive-order', orderDetail => {
-    appendMessage(orderDetail)
+    if (ORDER_SUCCESS === orderDetail.status) {
+        appendMessage(orderDetail)
+
+        // ORDER SUCCESS
+        notify(TOASTR_SUCCESS, 'Order Success', orderDetail.foodTitle + ' has been added')
+    } else {        
+        // ORDER FAILED
+        notify(TOASTR_ERROR, 'Order Failed', 'Something went wrong')
+    }
 })
 
 function appendMessage(orderDetail) {

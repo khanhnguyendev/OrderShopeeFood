@@ -10,6 +10,8 @@ const fs = require('fs');
 const CONNECTION = 'CONNECTION'
 const DATA = 'DATA'
 const DEBUG = 'DEBUG'
+const ORDER_SUCCESS = '200'
+const ORDER_ERROR = '400'
 
 
 let shopUrl = '';
@@ -98,18 +100,34 @@ io.on('connection', socket => {
 
     // Validate Order User
     if (orderDetail.orderUser === null || orderDetail.orderUser.length < 1) {
-      // Order failed
+
+      // ORDER FAILED
+      orderDetail.status = ORDER_ERROR
+      io.emit('receive-order', orderDetail)
+
     } else {
-      // Saving order detail to file
+      // Fetching orders history
       orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
       let ordersJson = JSON.parse(orders);
+
+      // Adding new order
       ordersJson.push(orderDetail);
-  
+
+      // Saving orders to file
       fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
         // Error checking
-        if (err) throw err;
+        if (err) {
+          logWriter(DEBUG, err)
+          
+          // ORDER FAILED
+          orderDetail.status = ORDER_ERROR
+          return io.emit('receive-order', orderDetail)
+        }
         logWriter(DATA, "[New order added] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
-  
+
+        // ORDER SUCCESS
+        orderDetail.status = ORDER_SUCCESS
+
         // Send order to client
         io.emit('receive-order', orderDetail)
       });
@@ -277,8 +295,8 @@ function saveMenuJson(menuJson, req, res) {
       return logWriter(err);
     }
     logWriter(DEBUG, "Saving menu JSON complete...")
-    
+
   });
-  
+
   res.render('room', { roomName: req.params.room, foods: menuJson, orders: ordersData })
 }
