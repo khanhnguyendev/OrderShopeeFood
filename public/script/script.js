@@ -10,8 +10,9 @@ const txtuserName = document.getElementById('userName');
 const confirmBtn = document.getElementById('confirmBtn');
 const TOASTR_ERROR = 'error'
 const TOASTR_SUCCESS = 'success'
-const ORDER_ERROR = '400'
-const ORDER_SUCCESS = '200'
+const TOASTR_WARNING = 'warning'
+const ERROR = '400'
+const SUCCESS = '200'
 
 var orderDetail = ''
 var orderJson;
@@ -81,6 +82,9 @@ function notify(type, mainMessage, subMessage) {
     if (TOASTR_SUCCESS === type) {
         return toastr.success(subMessage, mainMessage)
     }
+    if (TOASTR_WARNING === type) {
+        return toastr.warning(subMessage, mainMessage)
+    }
 }
 
 /**
@@ -144,12 +148,12 @@ socket.on('user-disconnected', name => {
  * Handle Order Status & Display Order
  */
 socket.on('receive-order', orderDetail => {
-    if (ORDER_SUCCESS === orderDetail.status) {
+    if (SUCCESS === orderDetail.status) {
         appendMessage(orderDetail)
 
         // ORDER SUCCESS
         notify(TOASTR_SUCCESS, 'Order Success', orderDetail.foodTitle + ' has been added')
-    } else {        
+    } else {
         // ORDER FAILED
         notify(TOASTR_ERROR, 'Order Failed', 'Something went wrong')
     }
@@ -157,7 +161,11 @@ socket.on('receive-order', orderDetail => {
 
 function appendMessage(orderDetail) {
     const el = document.createElement('div')
-    let el1 = "<li>"
+    let el1 = "<li onclick='confirmDelete(this)' data-room='" + orderDetail.roomName
+        + "' data-user='" + orderDetail.orderUser
+        + "' data-food='" + orderDetail.foodTitle
+        + "' data-price='" + orderDetail.foodPrice
+        + "' data-time='" + orderDetail.orderTime + "' > "
     let el2 = "<span id='order-info'>" + orderDetail.orderUser + " đã đặt " + orderDetail.foodTitle + " x " + orderDetail.foodPrice + " [" + orderDetail.orderTime + "]" + "</span>"
     let el3 = "</li>"
     el.innerHTML = el1 + el2 + el3
@@ -168,4 +176,36 @@ function appendLog(log) {
     const logElement = document.createElement('li')
     logElement.innerText = log
     logContainer.append(logElement)
+}
+
+/**
+ * Delete Order
+ */
+function confirmDelete(event) {
+    let selectedOrder = {
+        roomName: event.getAttribute('data-room'),
+        foodTitle: event.getAttribute('data-food'),
+        orderUser: event.getAttribute('data-user'),
+        foodPrice: event.getAttribute('data-price'),
+        orderTime: event.getAttribute('data-time'),
+    }
+    fetch('/delete?order=' + encodeURIComponent(JSON.stringify(selectedOrder)), {
+        method: 'post',
+    }).then(function (response) {
+        if (200 === response.status) {
+            event.parentNode.removeChild(event)
+
+            // DELETE SUCCESS
+            notify(TOASTR_WARNING, 'Delete Order Success', orderDetail.foodTitle + ' has been deleted')
+        } else if (401 === response.status) {
+            // DELETE FAILED
+            notify(TOASTR_ERROR, 'Fail to delete your order', 'You do not have permission!!')
+        } else {
+            // DELETE FAILED
+            notify(TOASTR_ERROR, 'Fail to delete your order', 'Something went wrong')
+        }
+    }).catch(function (err) {
+        // DELETE FAILED
+        notify(TOASTR_ERROR, 'Fail to delete your order', err)
+    });
 }

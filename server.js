@@ -10,8 +10,9 @@ const fs = require('fs');
 const CONNECTION = 'CONNECTION'
 const DATA = 'DATA'
 const DEBUG = 'DEBUG'
-const ORDER_SUCCESS = '200'
-const ORDER_ERROR = '400'
+const SUCCESS = '200'
+const ERROR = '400'
+const AUTHORITY = '401'
 
 
 let shopUrl = '';
@@ -69,6 +70,48 @@ app.get('/:room', (req, res) => {
 
 })
 
+// app.post('/delete', (req, res) => {
+
+//   // Deleted order
+//   let selectedOrd = JSON.parse(req.query.order)
+
+//   // Fetching order history
+//   orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+
+//   let version = orders.length
+//   if (version > 2) {
+//     let ordersJson = JSON.parse(orders);
+
+//     ordersJson.forEach((orderJson) => {
+//       if (orderJson.orderUser === selectedOrd.orderUser
+//         && orderJson.foodTitle === selectedOrd.foodTitle
+//         && orderJson.foodPrice === selectedOrd.foodPrice) {
+
+//         let index = ordersJson.indexOf(orderJson);
+//         ordersJson.splice(index, 1)
+//         logWriter(DATA, '[Deleted order] ' + JSON.stringify(selectedOrd))
+//       }
+//     })
+
+//     let newVersion = ordersJson.length
+
+//     if (version === newVersion) {
+//       res.status(AUTHORITY).send('You do not have permision!!')
+//     } else {
+//       // Delele order from file
+//       fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
+//         // Error checking
+//         if (err) {
+//           logWriter(DEBUG, err)
+//           // Fail to delete order
+//           res.status(ERROR).send('Fail to delete your order!!')
+//         }
+  
+//       });
+//       res.status(SUCCESS).send('Delete order success!!')
+//     }
+//   }
+// })
 
 io.on('connection', socket => {
   socket.on('new-user', (room, name) => {
@@ -102,7 +145,7 @@ io.on('connection', socket => {
     if (orderDetail.orderUser === null || orderDetail.orderUser.length < 1) {
 
       // ORDER FAILED
-      orderDetail.status = ORDER_ERROR
+      orderDetail.status = ERROR
       io.emit('receive-order', orderDetail)
 
     } else {
@@ -118,15 +161,15 @@ io.on('connection', socket => {
         // Error checking
         if (err) {
           logWriter(DEBUG, err)
-          
+
           // ORDER FAILED
-          orderDetail.status = ORDER_ERROR
+          orderDetail.status = ERROR
           return io.emit('receive-order', orderDetail)
         }
-        logWriter(DATA, "[New order added] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
+        logWriter(DATA, "[New order] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
 
         // ORDER SUCCESS
-        orderDetail.status = ORDER_SUCCESS
+        orderDetail.status = SUCCESS
 
         // Send order to client
         io.emit('receive-order', orderDetail)
@@ -134,6 +177,50 @@ io.on('connection', socket => {
     }
 
   })
+
+  /**
+   * Detele Order
+   */
+  socket.on('delete-confirm', orderDetail => {
+    // Fetching order history
+    orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+    if (orders.length > 2) {
+      let ordersJson = JSON.parse(orders);
+
+      let selectedOrder = {
+        roomName: orderDetail.roomName,
+        orderUser: orderDetail.orderUser,
+        foodTitle: orderDetail.foodTitle,
+        foodprice: orderDetail.foodprice,
+        orderTime: orderDetail.orderTime
+      }
+
+      ordersJson.forEach((orderJson) => {
+        if (orderJson === selectedOrder) {
+          ordersJson.splice(orderJson)
+        }
+      })
+
+      // Delele order from file
+      fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
+        // Error checking
+        if (err) {
+          logWriter(DEBUG, err)
+
+          // ORDER FAILED
+          orderDetail.status = ERROR
+          return io.emit('delete-order', orderDetail)
+        }
+
+        // ORDER SUCCESS
+        orderDetail.status = SUCCESS
+
+        // Send order to client
+        io.emit('delete-order', orderDetail)
+      });
+    }
+  })
+
 })
 
 server.listen(port, function () {
