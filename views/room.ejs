@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/css/toastr.min.css">
 
   <script defer src="http://192.168.33.21:3000/socket.io/socket.io.js"></script>
-  <script defer src="/script/jquery.js" ></script>
+  <script defer src="/script/jquery.js"></script>
   <script defer src="/script/nicepage.js"></script>
   <script defer src="/script/script.js"></script>
   <script defer src="/script/background.js"></script>
@@ -64,23 +64,9 @@
                                       <h4 class="u-align-center u-custom-font u-font-montserrat u-text u-text-2">
                                         <%= food.title %>
                                       </h4>
-                                      <button type="button" class="button-order u-btn-1" onclick="sendOrder(this)" data-title="<%= food.title %>"
-                                        data-price="<%= food.price %>">
-                                        <div class="wrapper">
-                                          <span><%= food.price %></span>
-                                          <div class="circle circle-12"></div>
-                                          <div class="circle circle-11"></div>
-                                          <div class="circle circle-10"></div>
-                                          <div class="circle circle-9"></div>
-                                          <div class="circle circle-8"></div>
-                                          <div class="circle circle-7"></div>
-                                          <div class="circle circle-6"></div>
-                                          <div class="circle circle-5"></div>
-                                          <div class="circle circle-4"></div>
-                                          <div class="circle circle-3"></div>
-                                          <div class="circle circle-2"></div>
-                                          <div class="circle circle-1"></div>
-                                        </div>
+                                      <button type="button" class="button-order" onclick="sendOrder(this)"
+                                        data-title="<%= food.title %>" data-price="<%= food.price %>">
+                                        <%= food.price %>
                                       </button>
                                     </div>
                                   </div>
@@ -105,13 +91,16 @@
                                 <h2 id="order-list-title">Order List</h2>
                                 <ol class="orders-list" id="display-order">
                                   <% orders.forEach((orderDetail)=> { %>
-                                  <li>
-                                    <span id="order-info"><%= orderDetail.orderUser %> đã đặt <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %> [<%=orderDetail.orderTime %>]</span>
-                                  </li>
-                                  <% }) %>
+                                    <li>
+                                      <span id="order-info">
+                                        <%= orderDetail.orderUser %> đã đặt <%= orderDetail.foodTitle %> x
+                                            <%=orderDetail.foodPrice %> [<%=orderDetail.orderTime %>]
+                                      </span>
+                                    </li>
+                                    <% }) %>
                                 </ol>
                                 <!-- ORDER DETAIL -->
-                                
+
                               </div>
                             </div>
                           </div>
@@ -282,7 +271,7 @@
       </div>
     </div> -->
     <!-- BACKGROUND -->
-    
+
   </div>
 
 </body>

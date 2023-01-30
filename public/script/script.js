@@ -166,7 +166,7 @@ function appendMessage(orderDetail) {
         + "' data-food='" + orderDetail.foodTitle
         + "' data-price='" + orderDetail.foodPrice
         + "' data-time='" + orderDetail.orderTime + "' > "
-    let el2 = "<span id='order-info'>" + orderDetail.orderUser + " đã đặt " + orderDetail.foodTitle + " x " + orderDetail.foodPrice + " [" + orderDetail.orderTime + "]" + "</span>"
+    let el2 = "<span id='order-info'>" + "<label style='color:red'>" + orderDetail.orderUser + "</label>" + " đã đặt " + orderDetail.foodTitle + " x " + orderDetail.foodPrice + " [" + orderDetail.orderTime + "]" + "</span>"
     let el3 = "</li>"
     el.innerHTML = el1 + el2 + el3
     orderContainer.appendChild(el)
