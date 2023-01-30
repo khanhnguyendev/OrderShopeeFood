@@ -93,7 +93,7 @@
                                   <% orders.forEach((orderDetail)=> { %>
                                     <li>
                                       <span id="order-info">
-                                        <%= orderDetail.orderUser %> đã đặt <%= orderDetail.foodTitle %> x
+                                        <label id="red-txt"><%= orderDetail.orderUser %></label> order <label id="red-txt"><%= orderDetail.foodTitle %></label> x
                                             <%=orderDetail.foodPrice %> [<%=orderDetail.orderTime %>]
                                       </span>
                                     </li>

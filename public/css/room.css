@@ -123,6 +123,10 @@ body .twitter svg {
 }
 
 /** ORDER LIST */
+#red-txt {
+  color: red;
+}
+
 #order-list-title {
   color: aqua;
 }
