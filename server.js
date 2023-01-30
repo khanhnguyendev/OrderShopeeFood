@@ -255,7 +255,7 @@ function getDateTime() {
  * Log Writer
  */
 function logWriter(type, message) {
-  console.log(getDateTime() + " ---" + type + "---]" + message)
+  console.log(getDateTime() + " ---" + type + "---] " + message)
 }
 
 async function fetchShopeeFood(req, res) {
