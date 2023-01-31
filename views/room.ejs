@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <meta name="description" content="">
-  <title>Home</title>
+  <title>Order Shopee Food</title>
 
   <link rel="stylesheet" href="/css/nicepage.css" media="screen">
   <link rel="stylesheet" href="/css/room.css" media="screen">
@@ -90,20 +90,23 @@
                                 <h2 id="order-list-title">Order List</h2>
                                 <ol class="orders-list" id="display-order">
                                   <% orders.forEach((orderDetail)=> { %>
-                                    <li onclick="confirmDelete(this)" 
-                                      id="<%= orderDetail.orderId %>"
-                                      data-room="<%= orderDetail.roomName %>"
-                                      data-user="<%= orderDetail.orderUser %>" 
-                                      data-food="<%= orderDetail.foodTitle %>"
-                                      data-price="<%= orderDetail.foodPrice %>"
-                                      data-time="<%= orderDetail.orderTime %>">
+                                    <li onclick="confirmDelete(this)" id="<%= orderDetail.orderId %>"
+                                      data-room="<%= orderDetail.roomName %>" data-user="<%= orderDetail.orderUser %>"
+                                      data-food="<%= orderDetail.foodTitle %>" data-price="<%= orderDetail.foodPrice %>"
+                                      data-time="<%= orderDetail.orderTime %>"
+                                      data-amount="<% orderDetail.foodAmount %>">
                                       <span id="order-info">
                                         <label id="red-txt">
                                           <%= orderDetail.orderUser %>
-                                        </label> order <label id="red-txt">
+                                        </label>
+                                        order
+                                        <label id="red-txt">
                                           <%= orderDetail.foodTitle %>
-                                        </label> x
-                                        <%=orderDetail.foodPrice %> [<%=orderDetail.orderTime %>]
+                                        </label>
+                                        x <%=orderDetail.foodPrice %> </br> [<%=orderDetail.orderTime %>]
+                                            <label id="food-amount">
+                                              [SL: <%=orderDetail.foodAmount %>]
+                                            </label>
                                       </span>
                                     </li>
                                     <% }) %>
@@ -118,15 +121,13 @@
                           <div class="u-layout-row">
                             <div
                               class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-30 u-layout-cell-3">
-                              <div id="log-container"
-                                class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-7">
-
+                              <div id="log-container" class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-7">
+                                <h2 id="order-list-title">Comming Soon</h2>
                               </div>
                             </div>
-                            <div
-                              class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-30 u-layout-cell-4">
-                              <div
-                                class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-8">
+                            <div class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-30 u-layout-cell-4">
+                              <div class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-8">
+                                <h2 id="order-list-title">Comming Soon</h2>
                               </div>
                             </div>
                           </div>
@@ -153,7 +154,7 @@
     </section>
 
     <!-- BACKGROUND -->
-    <!-- <div class="universe">
+    <div class="universe">
       <div class="universe-container">
         <div class="content">
           <canvas id="universe"></canvas>
@@ -278,7 +279,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
     <!-- BACKGROUND -->
 
   </div>

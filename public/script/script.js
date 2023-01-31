@@ -191,7 +191,7 @@ function appendMessage(orderDetail) {
 
         el.innerHTML = `<span id="order-info">
                           <label id="red-txt">${orderDetail.orderUser}</label> order 
-                          <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} [${orderDetail.orderTime}] <label id="food-amount">[SL: ${orderDetail.foodAmount}]</lbel>
+                          <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} </br> [${orderDetail.orderTime}] <label id="food-amount">[SL: ${orderDetail.foodAmount}]</lbel>
                         </span>`;
         orderContainer.appendChild(el);
     }
