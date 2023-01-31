@@ -83,18 +83,21 @@ app.post('/delete', (req, res) => {
   if (orders.length > 2) {
     let ordersJson = JSON.parse(orders);
 
-    if (selectedOrd.orderUser === selectedOrd.deleteUser) {
+    ordersJson.forEach(order => {
 
-      // Find the index of the item to be removed
-      let itemIndex = ordersJson.findIndex(order => order.foodTitle === selectedOrd.foodTitle);
+      if (order.orderId == selectedOrd.orderId) {
+        if (order.orderUser === selectedOrd.orderUser) {
 
-      // Remove the item using splice
-      ordersJson.splice(itemIndex, 1);
+          // Remove the item using splice
+          ordersJson.splice(order)
 
-      logWriter(DATA, '[Deleted order by ' + selectedOrd.deleteUser + '] ' + JSON.stringify(selectedOrd))
+          // Delete log
+          logWriter(DATA, '[Deleted order by ' + selectedOrd.deleteUser + '] ' + JSON.stringify(selectedOrd))
 
-      isDeleted = true
-    }
+          isDeleted = true
+        }
+      }
+    })
 
 
     if (!isDeleted) {
@@ -110,8 +113,6 @@ app.post('/delete', (req, res) => {
         }
 
       });
-      // Emit the refresh event to all connected clients
-      io.emit('refresh');
       res.status(SUCCESS).send('Delete order success!!')
     }
   } else {

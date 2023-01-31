@@ -202,6 +202,7 @@ function appendLog(log) {
 function confirmDelete(event) {
     let selectedOrder = {
         roomName: event.getAttribute('data-room'),
+        orderId : event.getAttribute('id'),
         foodTitle: event.getAttribute('data-food'),
         orderUser: event.getAttribute('data-user'),
         foodPrice: event.getAttribute('data-price'),
@@ -212,7 +213,8 @@ function confirmDelete(event) {
         method: 'post',
     }).then(function (response) {
         if (200 === response.status) {
-            event.parentNode.removeChild(event)
+            // CLEAR ORDER DISPLAY
+            clearOrderDsp(event.getAttribute('id'))
 
             // DELETE SUCCESS
             notify(TOASTR_WARNING, 'Delete Order Success', orderDetail.foodTitle + ' has been deleted')
@@ -227,4 +229,8 @@ function confirmDelete(event) {
         // DELETE FAILED
         notify(TOASTR_ERROR, 'Fail to delete your order', err)
     });
+}
+
+function clearOrderDsp(orderId) {
+    console.log(orderId)
 }
