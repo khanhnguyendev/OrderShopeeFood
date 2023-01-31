@@ -112,7 +112,7 @@ function sendOrder(event) {
 
     if (!userName || userName.length < 1) {
         // User name undefined
-        return notify(TOASTR_ERROR, 'Username undefined', 'Please check cookies!')
+        return notify(TOASTR_ERROR, 'Username undefined', 'Please remove cookies then try again!')
     }
 
     orderDetail = {
