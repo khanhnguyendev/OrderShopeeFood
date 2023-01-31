@@ -78,29 +78,34 @@ app.post('/delete', (req, res) => {
   // Fetching order history
   orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
 
-  let isDeleted = false;
+  let orderIdDeleted;
 
   if (orders.length > 2) {
-    let ordersJson = JSON.parse(orders);
+    let ordersJson = JSON.parse(orders)
+
+    let deletedOrderId = selectedOrd.orderId
 
     ordersJson.forEach(order => {
 
-      if (order.orderId == selectedOrd.orderId) {
-        if (order.orderUser === selectedOrd.orderUser) {
+      if (order.orderId == deletedOrderId) {
+        if (order.orderUser === selectedOrd.deleteUser) {
+
+          // Find the index of the item to be removed
+          let itemIdx = ordersJson.findIndex(item => item.orderId == deletedOrderId);
 
           // Remove the item using splice
-          ordersJson.splice(order)
+          ordersJson.splice(itemIdx, 1);
+
+          orderIdDeleted = deletedOrderId
 
           // Delete log
           logWriter(DATA, '[Deleted order by ' + selectedOrd.deleteUser + '] ' + JSON.stringify(selectedOrd))
 
-          isDeleted = true
         }
       }
     })
 
-
-    if (!isDeleted) {
+    if (!orderIdDeleted) {
       res.status(AUTHORITY).send('You do not have permision!!')
     } else {
       // Delele order from file
@@ -113,6 +118,7 @@ app.post('/delete', (req, res) => {
         }
 
       });
+      io.emit('clear-order', orderIdDeleted)
       res.status(SUCCESS).send('Delete order success!!')
     }
   } else {

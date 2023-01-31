@@ -70,25 +70,24 @@ if (cookieUserName == null || cookieUserName.length < 1) {
 function notify(type, mainMessage, subMessage) {
 
     toastr.options = {
-      progressBar: true,
-      timeOut: 3000,
-      extendedTimeOut: 2000,
-      showMethod: 'slideDown',
-      hideMethod: 'slideUp',
-      closeMethod: 'slideUp',
-      closeButton: true,
-      preventDuplicates: true
+        progressBar: true,
+        timeOut: 3000,
+        extendedTimeOut: 2000,
+        showMethod: 'slideDown',
+        hideMethod: 'slideUp',
+        closeMethod: 'slideUp',
+        closeButton: true
     };
-  
+
     switch (type) {
-      case TOASTR_ERROR:
-        return toastr.error(subMessage, mainMessage);
-      case TOASTR_SUCCESS:
-        return toastr.success(subMessage, mainMessage);
-      case TOASTR_WARNING:
-        return toastr.warning(subMessage, mainMessage);
+        case TOASTR_ERROR:
+            return toastr.error(subMessage, mainMessage);
+        case TOASTR_SUCCESS:
+            return toastr.success(subMessage, mainMessage);
+        case TOASTR_WARNING:
+            return toastr.warning(subMessage, mainMessage);
     }
-  }
+}
 
 /**
  * Get Current Time
@@ -101,7 +100,7 @@ function getCurrentTime() {
         + String(currentDate.getSeconds()).padStart(2, '0');
 }
 
-let nextOrderId = 1;  
+let nextOrderId = 1;
 
 /**
  * Send food oder detail
@@ -118,7 +117,7 @@ function sendOrder(event) {
 
     orderDetail = {
         roomName: roomName,
-        orderId : nextOrderId++,
+        orderId: nextOrderId++,
         orderUser: userName,
         foodTitle: event.getAttribute('data-title'),
         foodPrice: event.getAttribute('data-price'),
@@ -129,10 +128,11 @@ function sendOrder(event) {
     socket.emit('send-order', orderDetail)
 }
 
-// Listen for the refresh event
-socket.on('refresh', () => {
-  // Refresh the page
-  location.reload();
+// Listen for the clear order event
+socket.on('clear-order', (orderId) => {
+    // Find order element and remove it
+    const deletedOrder = document.getElementById(orderId)
+    deletedOrder.parentNode.removeChild(deletedOrder);
 });
 
 socket.on('room-created', room => {
@@ -181,14 +181,14 @@ function appendMessage(orderDetail) {
     el.setAttribute('data-food', orderDetail.foodTitle);
     el.setAttribute('data-price', orderDetail.foodPrice);
     el.setAttribute('data-time', orderDetail.orderTime);
-  
+
     el.innerHTML = `<span id="order-info">
                       <label id="red-txt">${orderDetail.orderUser}</label> order 
                       <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} [${orderDetail.orderTime}]
                     </span>`;
     orderContainer.appendChild(el);
-  }
-  
+}
+
 
 function appendLog(log) {
     const logElement = document.createElement('li')
@@ -202,7 +202,7 @@ function appendLog(log) {
 function confirmDelete(event) {
     let selectedOrder = {
         roomName: event.getAttribute('data-room'),
-        orderId : event.getAttribute('id'),
+        orderId: event.getAttribute('id'),
         foodTitle: event.getAttribute('data-food'),
         orderUser: event.getAttribute('data-user'),
         foodPrice: event.getAttribute('data-price'),
@@ -213,11 +213,8 @@ function confirmDelete(event) {
         method: 'post',
     }).then(function (response) {
         if (200 === response.status) {
-            // CLEAR ORDER DISPLAY
-            clearOrderDsp(event.getAttribute('id'))
-
             // DELETE SUCCESS
-            notify(TOASTR_WARNING, 'Delete Order Success', orderDetail.foodTitle + ' has been deleted')
+            notify(TOASTR_SUCCESS, 'Delete Order Success', orderDetail.foodTitle + ' has been deleted')
         } else if (401 === response.status) {
             // DELETE FAILED
             notify(TOASTR_ERROR, 'Fail to delete your order', 'You do not have permission!!')
@@ -229,8 +226,4 @@ function confirmDelete(event) {
         // DELETE FAILED
         notify(TOASTR_ERROR, 'Fail to delete your order', err)
     });
-}
-
-function clearOrderDsp(orderId) {
-    console.log(orderId)
 }
