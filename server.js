@@ -153,22 +153,42 @@ io.on('connection', socket => {
   /**
    * Send order detail
    */
-  socket.on('send-order', (orderDetail) => {
+  socket.on('send-order', (orderReq) => {
 
     // Validate Order User
-    if (orderDetail.orderUser === null || orderDetail.orderUser.length < 1) {
+    if (orderReq.orderUser === null || orderReq.orderUser.length < 1) {
 
       // ORDER FAILED
-      orderDetail.status = ERROR
-      io.emit('receive-order', orderDetail)
+      orderReq.status = ERROR
+      io.emit('receive-order', orderReq)
 
     } else {
       // Fetching orders history
-      orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
-      let ordersJson = JSON.parse(orders);
+      orders = fs.readFileSync(__dirname + "/dataJSON/orders.json")
+      let ordersJson = JSON.parse(orders)
+      let isDuplicateOrder = false
 
-      // Adding new order
-      ordersJson.push(orderDetail);
+      // Duplicate order
+      for (const order of ordersJson) {
+        if (order.orderUser === orderReq.orderUser && order.foodTitle === orderReq.foodTitle) {
+          // Update food amount
+          order.foodAmount = parseInt(order.foodAmount) + 1
+
+          // Update order request
+          orderReq.orderId = order.orderId
+          orderReq.foodAmount = order.foodAmount
+
+          // Duplicate Order flag
+          isDuplicateOrder = true;
+          break;
+        }
+      }
+
+      // New order
+      if (!isDuplicateOrder) {
+        orderReq.orderId = ordersJson.length + 1
+        ordersJson.push(orderReq)
+      }
 
       // Saving orders to file
       fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
@@ -177,16 +197,16 @@ io.on('connection', socket => {
           logWriter(DEBUG, err)
 
           // ORDER FAILED
-          orderDetail.status = ERROR
-          return io.emit('receive-order', orderDetail)
+          orderReq.status = ERROR
+          return io.emit('receive-order', orderReq)
         }
-        logWriter(DATA, "[New order] [ID: " + orderDetail.orderId + "] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
+        logWriter(DATA, "[New order] [ID: " + orderReq.orderId + "] " + orderReq.orderUser + ' ' + orderReq.foodTitle + ' ' + orderReq.foodPrice + ' ' + orderReq.orderTime);
 
         // ORDER SUCCESS
-        orderDetail.status = SUCCESS
+        orderReq.status = SUCCESS
 
         // Send order to client
-        io.emit('receive-order', orderDetail)
+        io.emit('receive-order', orderReq)
       });
     }
 
@@ -269,7 +289,7 @@ function getDateTime() {
  * Log Writer
  */
 function logWriter(type, message) {
-  console.log(getDateTime() + " ---" + type + "---] " + message)
+  console.log(getDateTime() + " " + type + "] " + message)
 }
 
 async function fetchShopeeFood(req, res) {

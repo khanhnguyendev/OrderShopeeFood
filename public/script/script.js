@@ -117,11 +117,11 @@ function sendOrder(event) {
 
     orderDetail = {
         roomName: roomName,
-        orderId: nextOrderId++,
         orderUser: userName,
         foodTitle: event.getAttribute('data-title'),
         foodPrice: event.getAttribute('data-price'),
-        orderTime: getCurrentTime()
+        orderTime: getCurrentTime(),
+        foodAmount: 1
     };
 
     // submit order
@@ -173,20 +173,28 @@ socket.on('receive-order', orderDetail => {
 
 
 function appendMessage(orderDetail) {
-    const el = document.createElement('li');
-    el.id = orderDetail.orderId;
-    el.setAttribute('onclick', "confirmDelete(this)");
-    el.setAttribute('data-room', orderDetail.roomName);
-    el.setAttribute('data-user', orderDetail.orderUser);
-    el.setAttribute('data-food', orderDetail.foodTitle);
-    el.setAttribute('data-price', orderDetail.foodPrice);
-    el.setAttribute('data-time', orderDetail.orderTime);
+    // DUPLICATE ORDER
+    const isDuplicateOrder = document.getElementById(orderDetail.orderId)
+    if (isDuplicateOrder) {
+        isDuplicateOrder.querySelector("#food-amount").innerHTML = `[SL: ${orderDetail.foodAmount}]`
+    }
+    // NEW ORDER
+    else {
+        const el = document.createElement('li');
+        el.id = orderDetail.orderId;
+        el.setAttribute('onclick', "confirmDelete(this)");
+        el.setAttribute('data-room', orderDetail.roomName);
+        el.setAttribute('data-user', orderDetail.orderUser);
+        el.setAttribute('data-food', orderDetail.foodTitle);
+        el.setAttribute('data-price', orderDetail.foodPrice);
+        el.setAttribute('data-time', orderDetail.orderTime);
 
-    el.innerHTML = `<span id="order-info">
-                      <label id="red-txt">${orderDetail.orderUser}</label> order 
-                      <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} [${orderDetail.orderTime}]
-                    </span>`;
-    orderContainer.appendChild(el);
+        el.innerHTML = `<span id="order-info">
+                          <label id="red-txt">${orderDetail.orderUser}</label> order 
+                          <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} [${orderDetail.orderTime}] <label id="food-amount">[SL: ${orderDetail.foodAmount}]</lbel>
+                        </span>`;
+        orderContainer.appendChild(el);
+    }
 }
 
 
