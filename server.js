@@ -55,20 +55,38 @@ app.post('/room', (req, res) => {
   io.emit('room-created', req.body.orderShopName)
 })
 
+// app.get('/:room', (req, res) => {
+//   if (rooms[req.params.room] == null) {
+//     return res.redirect('/')
+//   } else {
+//     let menuJson = fs.readFileSync(__dirname + "/dataJSON/menu.json");
+//     if (menuJson.length < 3) {
+//       fetchShopeeFood(req, res);
+//     } else {
+//       let orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+//       res.render('room', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
+//     }
+//   }
+// })
+
 app.get('/:room', (req, res) => {
-  if (rooms[req.params.room] == null) {
-    return res.redirect('/')
-  } else {
-    let menuJson = fs.readFileSync(__dirname + "/dataJSON/menu.json");
-    if (menuJson.length < 3) {
-      fetchShopeeFood(req, res);
-    } else {
-      let orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
-      res.render('room', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
-    }
+  const room = rooms[req.params.room];
+  if (!room) {
+      return res.redirect('/');
   }
 
-})
+  const menuJson = fs.readFileSync(__dirname + '/dataJSON/menu.json');
+  if (menuJson.length < 3) {
+      return fetchShopeeFood(req, res);
+  }
+
+  const orderJson = fs.readFileSync(__dirname + '/dataJSON/orders.json');
+  res.render('room', {
+      roomName: req.params.room,
+      foods: JSON.parse(menuJson),
+      orders: JSON.parse(orderJson)
+  });
+});
 
 app.post('/delete', (req, res) => {
 
@@ -99,7 +117,7 @@ app.post('/delete', (req, res) => {
           orderIdDeleted = deletedOrderId
 
           // Delete log
-          logWriter(DATA, '[Deleted order by ' + selectedOrd.deleteUser + '] ' + JSON.stringify(selectedOrd))
+          logWriter(DATA, `[Deleted order] [User: ${selectedOrd.deleteUser}] [${JSON.stringify(selectedOrd)}]`);
 
         }
       }
@@ -200,7 +218,7 @@ io.on('connection', socket => {
           orderReq.status = ERROR
           return io.emit('receive-order', orderReq)
         }
-        logWriter(DATA, "[New order] [ID: " + orderReq.orderId + "] " + orderReq.orderUser + ' ' + orderReq.foodTitle + ' ' + orderReq.foodPrice + ' ' + orderReq.orderTime);
+        logWriter(DATA, `[New order] [User: ${orderReq.orderUser}] [ID: ${orderReq.orderId}] [${orderReq.foodTitle} ${orderReq.foodPrice} ${orderReq.orderTime}]`);
 
         // ORDER SUCCESS
         orderReq.status = SUCCESS
@@ -303,18 +321,6 @@ async function getResId(req, res) {
   return fetch('https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=' + shopUrl.replace("https://shopeefood.vn/", ""), {
     method: 'GET',
     headers: {
-      // 'authority': 'gappapi.deliverynow.vn',
-      // 'accept': 'application/json, text/plain, */*',
-      // 'accept-language': 'en-US,en;q=0.9',
-      // 'origin': 'https://shopeefood.vn',
-      // 'referer': 'https://shopeefood.vn/',
-      // 'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-      // 'sec-ch-ua-mobile': '?0',
-      // 'sec-ch-ua-platform': '"Windows"',
-      // 'sec-fetch-dest': 'empty',
-      // 'sec-fetch-mode': 'cors',
-      // 'sec-fetch-site': 'cross-site',
-      // 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
       'x-foody-access-token': '',
       'x-foody-api-version': '1',
       'x-foody-app-type': '1004',
@@ -345,10 +351,6 @@ async function getDeliveryDishes(deliveryInfo, req, res) {
   fetch(urlAPI, {
     method: 'GET',
     headers: {
-      // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0',
-      // 'Accept': 'application/json, text/plain, */*',
-      // 'Accept-Language': 'en-US,en;q=0.5',
-      // 'Accept-Encoding': 'gzip, deflate, br',
       'x-foody-client-id': '',
       'x-foody-client-type': '1',
       'x-foody-app-type': '1004',
@@ -356,13 +358,6 @@ async function getDeliveryDishes(deliveryInfo, req, res) {
       'x-foody-api-version': '1',
       'x-foody-client-language': 'vi',
       'x-foody-access-token': '6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b'
-      // 'Origin': 'https://shopeefood.vn',
-      // 'Connection': 'keep-alive',
-      // 'Referer': 'https://shopeefood.vn/',
-      // 'Sec-Fetch-Dest': 'empty',
-      // 'Sec-Fetch-Mode': 'cors',
-      // 'Sec-Fetch-Site': 'cross-site',
-      // 'TE': 'trailers'
     }
   })
     .then((response) => {

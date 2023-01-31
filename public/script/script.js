@@ -100,32 +100,32 @@ function getCurrentTime() {
         + String(currentDate.getSeconds()).padStart(2, '0');
 }
 
-let nextOrderId = 1;
-
 /**
  * Send food oder detail
  * 
  */
 function sendOrder(event) {
 
-    const userName = getCookie('userName')
+    try {
+        const userName = getCookie("userName");
+        if (!userName || userName.length < 1) {
+            // User name undefined
+            return notify(TOASTR_ERROR, 'Username undefined', 'Please remove cookies then try again!')
+        }
 
-    if (!userName || userName.length < 1) {
-        // User name undefined
-        return notify(TOASTR_ERROR, 'Username undefined', 'Please remove cookies then try again!')
+        const orderDetail = {
+            roomName: roomName,
+            orderUser: userName,
+            foodTitle: event.getAttribute("data-title"),
+            foodPrice: event.getAttribute("data-price"),
+            orderTime: getCurrentTime(),
+            foodAmount: 1,
+        };
+
+        socket.emit("send-order", orderDetail);
+    } catch (error) {
+        notify(TOASTR_ERROR, "Error", error.message);
     }
-
-    orderDetail = {
-        roomName: roomName,
-        orderUser: userName,
-        foodTitle: event.getAttribute('data-title'),
-        foodPrice: event.getAttribute('data-price'),
-        orderTime: getCurrentTime(),
-        foodAmount: 1
-    };
-
-    // submit order
-    socket.emit('send-order', orderDetail)
 }
 
 // Listen for the clear order event
@@ -160,39 +160,45 @@ socket.on('user-disconnected', name => {
  * Handle Order Status & Display Order
  */
 socket.on('receive-order', orderDetail => {
-    if (SUCCESS === orderDetail.status) {
-        appendMessage(orderDetail)
-
-        // ORDER SUCCESS
-        notify(TOASTR_SUCCESS, 'Order Success', orderDetail.foodTitle + ' has been added')
-    } else {
-        // ORDER FAILED
-        notify(TOASTR_ERROR, 'Order Failed', 'Something went wrong')
+    switch (orderDetail.status) {
+      case SUCCESS:
+        appendMessage(orderDetail);
+        notify(TOASTR_SUCCESS, "Order Success", `${orderDetail.foodTitle} has been added`);
+        break;
+  
+      default:
+        notify(TOASTR_ERROR, "Order Failed", "Something went wrong");
+        break;
     }
 })
 
 
 function appendMessage(orderDetail) {
-    // DUPLICATE ORDER
-    const isDuplicateOrder = document.getElementById(orderDetail.orderId)
-    if (isDuplicateOrder) {
-        isDuplicateOrder.querySelector("#food-amount").innerHTML = `[SL: ${orderDetail.foodAmount}]`
-    }
-    // NEW ORDER
-    else {
-        const el = document.createElement('li');
-        el.id = orderDetail.orderId;
-        el.setAttribute('onclick', "confirmDelete(this)");
-        el.setAttribute('data-room', orderDetail.roomName);
-        el.setAttribute('data-user', orderDetail.orderUser);
-        el.setAttribute('data-food', orderDetail.foodTitle);
-        el.setAttribute('data-price', orderDetail.foodPrice);
-        el.setAttribute('data-time', orderDetail.orderTime);
+    const orderId = orderDetail.orderId;
+    const orderEl = document.getElementById(orderId);
 
-        el.innerHTML = `<span id="order-info">
-                          <label id="red-txt">${orderDetail.orderUser}</label> order 
-                          <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} </br> [${orderDetail.orderTime}] <label id="food-amount">[SL: ${orderDetail.foodAmount}]</lbel>
-                        </span>`;
+    if (orderEl) {
+        // DUPLICATE ORDER
+        orderEl.querySelector("#food-amount").innerHTML = `[Qty: ${orderDetail.foodAmount}]`;
+    } else {
+        // NEW ORDER
+        const el = document.createElement("li");
+        el.id = orderId;
+        el.setAttribute("onclick", "confirmDelete(this)");
+        el.setAttribute("data-room", orderDetail.roomName);
+        el.setAttribute("data-user", orderDetail.orderUser);
+        el.setAttribute("data-food", orderDetail.foodTitle);
+        el.setAttribute("data-price", orderDetail.foodPrice);
+        el.setAttribute("data-time", orderDetail.orderTime);
+
+        el.innerHTML = `
+            <span id="order-info">
+                <label id="red-txt">${orderDetail.orderUser}</label> ordered
+                <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} <br> [${orderDetail.orderTime}]
+                <label id="food-amount">[Qty: ${orderDetail.foodAmount}]</label>
+            </span>
+        `;
+
         orderContainer.appendChild(el);
     }
 }
@@ -219,19 +225,17 @@ function confirmDelete(event) {
     }
     fetch('/delete?order=' + encodeURIComponent(JSON.stringify(selectedOrder)), {
         method: 'post',
-    }).then(function (response) {
-        if (200 === response.status) {
-            // DELETE SUCCESS
-            notify(TOASTR_SUCCESS, 'Delete Order Success', orderDetail.foodTitle + ' has been deleted')
-        } else if (401 === response.status) {
-            // DELETE FAILED
-            notify(TOASTR_ERROR, 'Fail to delete your order', 'You do not have permission!!')
-        } else {
-            // DELETE FAILED
-            notify(TOASTR_ERROR, 'Fail to delete your order', 'Something went wrong')
-        }
-    }).catch(function (err) {
-        // DELETE FAILED
-        notify(TOASTR_ERROR, 'Fail to delete your order', err)
-    });
+    })
+        .then(response => {
+            if (response.status === 200) {
+                notify(TOASTR_SUCCESS, 'Delete Order Success', selectedOrder.foodTitle + ' has been deleted');
+            } else if (response.status === 401) {
+                notify(TOASTR_ERROR, 'Fail to delete your order', 'You do not have permission!!');
+            } else {
+                notify(TOASTR_ERROR, 'Fail to delete your order', 'Something went wrong');
+            }
+        })
+        .catch(err => {
+            notify(TOASTR_ERROR, 'Fail to delete your order', err);
+        });
 }
