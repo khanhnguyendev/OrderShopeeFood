@@ -49,8 +49,7 @@
                   <div class="u-layout-row">
                     <div class="u-size-30 u-size-60-md">
                       <div class="u-layout-col">
-                        <div
-                          class="u-container-style u-layout-cell u-radius-10 u-shape-round u-layout-cell-1">
+                        <div class="u-container-style u-layout-cell u-radius-10 u-shape-round u-layout-cell-1">
                           <div
                             class="u-border-2 u-border-palette-4-light-2 u-container-layout u-valign-middle u-container-layout-1">
                             <div class="u-list u-list-1">
@@ -91,10 +90,20 @@
                                 <h2 id="order-list-title">Order List</h2>
                                 <ol class="orders-list" id="display-order">
                                   <% orders.forEach((orderDetail)=> { %>
-                                    <li>
+                                    <li onclick="confirmDelete(this)" 
+                                      id="<%= orderDetail.orderId %>"
+                                      data-room="<%= orderDetail.roomName %>"
+                                      data-user="<%= orderDetail.orderUser %>" 
+                                      data-food="<%= orderDetail.foodTitle %>"
+                                      data-price="<%= orderDetail.foodPrice %>"
+                                      data-time="<%= orderDetail.orderTime %>">
                                       <span id="order-info">
-                                        <label id="red-txt"><%= orderDetail.orderUser %></label> order <label id="red-txt"><%= orderDetail.foodTitle %></label> x
-                                            <%=orderDetail.foodPrice %> [<%=orderDetail.orderTime %>]
+                                        <label id="red-txt">
+                                          <%= orderDetail.orderUser %>
+                                        </label> order <label id="red-txt">
+                                          <%= orderDetail.foodTitle %>
+                                        </label> x
+                                        <%=orderDetail.foodPrice %> [<%=orderDetail.orderTime %>]
                                       </span>
                                     </li>
                                     <% }) %>

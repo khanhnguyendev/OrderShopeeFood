@@ -209,6 +209,10 @@ body .twitter svg {
   overflow: auto;
 }
 
+li {
+  cursor: pointer;
+}
+
 ol {
   counter-reset: li;
   list-style: none;

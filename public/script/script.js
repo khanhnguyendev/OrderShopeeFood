@@ -68,24 +68,27 @@ if (cookieUserName == null || cookieUserName.length < 1) {
  * Notify message
  */
 function notify(type, mainMessage, subMessage) {
-    toastr.options.progressBar = true;
-    toastr.options.timeOut = 3000;
-    toastr.options.extendedTimeOut = 2000;
-    toastr.options.showMethod = 'slideDown';
-    toastr.options.hideMethod = 'slideUp';
-    toastr.options.closeMethod = 'slideUp';
-    toastr.options.closeButton = true;
 
-    if (TOASTR_ERROR === type) {
-        return toastr.error(subMessage, mainMessage)
+    toastr.options = {
+      progressBar: true,
+      timeOut: 3000,
+      extendedTimeOut: 2000,
+      showMethod: 'slideDown',
+      hideMethod: 'slideUp',
+      closeMethod: 'slideUp',
+      closeButton: true,
+      preventDuplicates: true
+    };
+  
+    switch (type) {
+      case TOASTR_ERROR:
+        return toastr.error(subMessage, mainMessage);
+      case TOASTR_SUCCESS:
+        return toastr.success(subMessage, mainMessage);
+      case TOASTR_WARNING:
+        return toastr.warning(subMessage, mainMessage);
     }
-    if (TOASTR_SUCCESS === type) {
-        return toastr.success(subMessage, mainMessage)
-    }
-    if (TOASTR_WARNING === type) {
-        return toastr.warning(subMessage, mainMessage)
-    }
-}
+  }
 
 /**
  * Get Current Time
@@ -98,21 +101,24 @@ function getCurrentTime() {
         + String(currentDate.getSeconds()).padStart(2, '0');
 }
 
+let nextOrderId = 1;  
+
 /**
  * Send food oder detail
  * 
  */
 function sendOrder(event) {
 
-    let userName = getCookie('userName')
+    const userName = getCookie('userName')
 
-    if (userName === null || userName.length < 1) {
+    if (!userName || userName.length < 1) {
         // User name undefined
         return notify(TOASTR_ERROR, 'Username undefined', 'Please check cookies!')
     }
 
     orderDetail = {
         roomName: roomName,
+        orderId : nextOrderId++,
         orderUser: userName,
         foodTitle: event.getAttribute('data-title'),
         foodPrice: event.getAttribute('data-price'),
@@ -122,6 +128,12 @@ function sendOrder(event) {
     // submit order
     socket.emit('send-order', orderDetail)
 }
+
+// Listen for the refresh event
+socket.on('refresh', () => {
+  // Refresh the page
+  location.reload();
+});
 
 socket.on('room-created', room => {
     const roomElement = document.createElement('div')
@@ -159,18 +171,24 @@ socket.on('receive-order', orderDetail => {
     }
 })
 
+
 function appendMessage(orderDetail) {
-    const el = document.createElement('div')
-    let el1 = "<li onclick='confirmDelete(this)' data-room='" + orderDetail.roomName
-        + "' data-user='" + orderDetail.orderUser
-        + "' data-food='" + orderDetail.foodTitle
-        + "' data-price='" + orderDetail.foodPrice
-        + "' data-time='" + orderDetail.orderTime + "' > "
-    let el2 = "<span id='order-info'>" + "<label id='red-txt'>" + orderDetail.orderUser + "</label>" + " order " + "<label id='red-txt'>" + orderDetail.foodTitle + "</label>" + " x " + orderDetail.foodPrice + " [" + orderDetail.orderTime + "]" + "</span>"
-    let el3 = "</li>"
-    el.innerHTML = el1 + el2 + el3
-    orderContainer.appendChild(el)
-}
+    const el = document.createElement('li');
+    el.id = orderDetail.orderId;
+    el.setAttribute('onclick', "confirmDelete(this)");
+    el.setAttribute('data-room', orderDetail.roomName);
+    el.setAttribute('data-user', orderDetail.orderUser);
+    el.setAttribute('data-food', orderDetail.foodTitle);
+    el.setAttribute('data-price', orderDetail.foodPrice);
+    el.setAttribute('data-time', orderDetail.orderTime);
+  
+    el.innerHTML = `<span id="order-info">
+                      <label id="red-txt">${orderDetail.orderUser}</label> order 
+                      <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} [${orderDetail.orderTime}]
+                    </span>`;
+    orderContainer.appendChild(el);
+  }
+  
 
 function appendLog(log) {
     const logElement = document.createElement('li')
@@ -188,6 +206,7 @@ function confirmDelete(event) {
         orderUser: event.getAttribute('data-user'),
         foodPrice: event.getAttribute('data-price'),
         orderTime: event.getAttribute('data-time'),
+        deleteUser: getCookie('userName')
     }
     fetch('/delete?order=' + encodeURIComponent(JSON.stringify(selectedOrder)), {
         method: 'post',

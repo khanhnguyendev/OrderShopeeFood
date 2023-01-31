@@ -70,48 +70,55 @@ app.get('/:room', (req, res) => {
 
 })
 
-// app.post('/delete', (req, res) => {
+app.post('/delete', (req, res) => {
 
-//   // Deleted order
-//   let selectedOrd = JSON.parse(req.query.order)
+  // Deleted order
+  let selectedOrd = JSON.parse(req.query.order)
 
-//   // Fetching order history
-//   orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+  // Fetching order history
+  orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
 
-//   let version = orders.length
-//   if (version > 2) {
-//     let ordersJson = JSON.parse(orders);
+  let isDeleted = false;
 
-//     ordersJson.forEach((orderJson) => {
-//       if (orderJson.orderUser === selectedOrd.orderUser
-//         && orderJson.foodTitle === selectedOrd.foodTitle
-//         && orderJson.foodPrice === selectedOrd.foodPrice) {
+  if (orders.length > 2) {
+    let ordersJson = JSON.parse(orders);
 
-//         let index = ordersJson.indexOf(orderJson);
-//         ordersJson.splice(index, 1)
-//         logWriter(DATA, '[Deleted order] ' + JSON.stringify(selectedOrd))
-//       }
-//     })
+    if (selectedOrd.orderUser === selectedOrd.deleteUser) {
 
-//     let newVersion = ordersJson.length
+      // Find the index of the item to be removed
+      let itemIndex = ordersJson.findIndex(order => order.foodTitle === selectedOrd.foodTitle);
 
-//     if (version === newVersion) {
-//       res.status(AUTHORITY).send('You do not have permision!!')
-//     } else {
-//       // Delele order from file
-//       fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
-//         // Error checking
-//         if (err) {
-//           logWriter(DEBUG, err)
-//           // Fail to delete order
-//           res.status(ERROR).send('Fail to delete your order!!')
-//         }
-  
-//       });
-//       res.status(SUCCESS).send('Delete order success!!')
-//     }
-//   }
-// })
+      // Remove the item using splice
+      ordersJson.splice(itemIndex, 1);
+
+      logWriter(DATA, '[Deleted order by ' + selectedOrd.deleteUser + '] ' + JSON.stringify(selectedOrd))
+
+      isDeleted = true
+    }
+
+
+    if (!isDeleted) {
+      res.status(AUTHORITY).send('You do not have permision!!')
+    } else {
+      // Delele order from file
+      fs.writeFile(__dirname + "/dataJSON/orders.json", JSON.stringify(ordersJson), 'utf8', function (err) {
+        // Error checking
+        if (err) {
+          logWriter(DEBUG, err)
+          // Fail to delete order
+          res.status(ERROR).send('Fail to delete your order!!')
+        }
+
+      });
+      // Emit the refresh event to all connected clients
+      io.emit('refresh');
+      res.status(SUCCESS).send('Delete order success!!')
+    }
+  } else {
+    // Fail to delete order
+    res.status(ERROR).send('Fail to delete your order!!')
+  }
+})
 
 io.on('connection', socket => {
   socket.on('new-user', (room, name) => {
@@ -166,7 +173,7 @@ io.on('connection', socket => {
           orderDetail.status = ERROR
           return io.emit('receive-order', orderDetail)
         }
-        logWriter(DATA, "[New order] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
+        logWriter(DATA, "[New order] [ID: " + orderDetail.orderId + "] " + orderDetail.orderUser + ' ' + orderDetail.foodTitle + ' ' + orderDetail.foodPrice + ' ' + orderDetail.orderTime);
 
         // ORDER SUCCESS
         orderDetail.status = SUCCESS
