@@ -70,7 +70,7 @@ if (cookieUserName == null || cookieUserName.length < 1) {
 function notify(type, mainMessage, subMessage) {
 
     toastr.options = {
-        positionClass: "toast-top-left",
+        width: 400,
         progressBar: true,
         timeOut: 3000,
         extendedTimeOut: 2000,
@@ -129,13 +129,6 @@ function sendOrder(event) {
     }
 }
 
-// Listen for the clear order event
-socket.on('clear-order', (orderId) => {
-    // Find order element and remove it
-    const deletedOrder = document.getElementById(orderId)
-    deletedOrder.parentNode.removeChild(deletedOrder);
-});
-
 socket.on('room-created', room => {
     const roomElement = document.createElement('div')
     roomElement.innerText = room
@@ -153,14 +146,12 @@ socket.on('room-created', room => {
 //     appendLog(`${name} disconnected`)
 // })
 
-/**
- * Handle Order Status & Display Order
- */
+// Listen for order event
 socket.on('receive-order', orderDetail => {
     switch (orderDetail.status) {
       case SUCCESS:
         appendMessage(orderDetail);
-        notify(TOASTR_SUCCESS, "Order Success", `${orderDetail.foodTitle} has been added`);
+        notify(TOASTR_SUCCESS, `Order Success`, `${orderDetail.orderUser} : ${orderDetail.foodTitle}`);
         break;
   
       default:
@@ -168,6 +159,13 @@ socket.on('receive-order', orderDetail => {
         break;
     }
 })
+
+// Listen for clear order event
+socket.on('clear-order', (orderId) => {
+    // Find order element and remove it
+    const deletedOrder = document.getElementById(orderId)
+    deletedOrder.parentNode.removeChild(deletedOrder);
+});
 
 
 function appendMessage(orderDetail) {
@@ -190,7 +188,7 @@ function appendMessage(orderDetail) {
 
         el.innerHTML = `
             <span class="order-detail">
-                <img class="user-avatar" alt="User Avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU">
+                <img class="user-avatar" alt="User Avatar" src="https://haycafe.vn/wp-content/uploads/2022/03/hinh-meo-hai-huoc.jpg">
                 <div class="order-text">
                   <label id="order-info-1"><label id="user-txt">${orderDetail.orderUser} </label><label id="order-time-txt">${orderDetail.orderTime}</label></label>
                   <label id="order-info-2"><label id="food-amount-txt">${orderDetail.foodAmount} x </label>${orderDetail.foodTitle} x ${orderDetail.foodPrice}</label>
@@ -227,7 +225,7 @@ function confirmDelete(event) {
     })
         .then(response => {
             if (response.status === 200) {
-                notify(TOASTR_SUCCESS, 'Delete Order Success', selectedOrder.foodTitle + ' has been deleted');
+                notify(TOASTR_SUCCESS, 'Delete Order Success', `${selectedOrder.foodTitle}`);
             } else if (response.status === 401) {
                 notify(TOASTR_ERROR, 'Fail to delete your order', 'You do not have permission!!');
             } else {
