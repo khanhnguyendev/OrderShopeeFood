@@ -41,194 +41,148 @@
   <div class="main-page page">
     <section class="main-page-content">
       <form id="send-container">
-          <section class="u-align-center u-clearfix u-section-1" id="carousel_329e">
-            <div class="u-clearfix u-sheet u-sheet-1">
-              <div class="u-clearfix u-expanded-width u-gutter-10 u-layout-wrap u-opacity u-opacity-10 u-layout-wrap-1">
-                <div class="u-layout">
-                  <div class="u-layout-row">
-                    <div class="u-size-30 u-size-60-md">
-                      <div class="u-layout-col">
-                        <div class="u-container-style u-layout-cell u-radius-10 u-shape-round u-layout-cell-1">
-                          <div
-                            class="u-border-2 u-border-palette-4-light-2 u-container-layout u-valign-middle u-container-layout-1">
-                            <div class="u-list u-list-1">
-                              <div class="u-repeater u-repeater-1">
-                                <% foods.forEach((food)=> { %>
-                                  <div
-                                    class="u-align-left u-container-style u-gradient u-list-item u-opacity u-opacity-75 u-radius-20 u-repeater-item u-shape-round u-list-item-1">
-                                    <div class="u-container-layout u-similar-container u-container-layout-2">
-                                      <img class="u-border-2 u-border-white u-image u-image-round u-radius-15 u-image-1"
-                                        alt="" data-image-width="800" data-image-height="604" src="<%= food.image %>">
-                                      <h4 class="u-align-center u-custom-font u-font-montserrat u-text u-text-2">
-                                        <%= food.title %>
-                                      </h4>
-                                      <button type="button" class="button-order" onclick="sendOrder(this)"
-                                        data-title="<%= food.title %>" data-price="<%= food.price %>">
-                                        <%= food.price %>
-                                      </button>
-                                    </div>
+        <section class="u-align-center u-clearfix u-section-1" id="carousel_329e">
+          <div class="u-clearfix u-sheet u-sheet-1">
+            <div class="u-clearfix u-expanded-width u-gutter-10 u-layout-wrap u-opacity u-opacity-10 u-layout-wrap-1">
+              <div class="u-layout">
+                <div class="u-layout-row">
+                  <div class="u-size-30 u-size-60-md">
+                    <div class="u-layout-col">
+                      <div class="u-container-style u-layout-cell u-radius-10 u-shape-round u-layout-cell-1">
+                        <div
+                          class="u-border-2 u-border-palette-4-light-2 u-container-layout u-valign-middle u-container-layout-1">
+                          <div class="u-list u-list-1">
+                            <div class="u-repeater u-repeater-1">
+                              <% foods.forEach((food)=> { %>
+                                <div
+                                  class="u-align-left u-container-style u-gradient u-list-item u-opacity u-opacity-75 u-radius-20 u-repeater-item u-shape-round u-list-item-1">
+                                  <div class="u-container-layout u-similar-container u-container-layout-2">
+                                    <img class="u-border-2 u-border-white u-image u-image-round u-radius-15 u-image-1"
+                                      alt="" data-image-width="800" data-image-height="604" src="<%= food.image %>">
+                                    <h4 class="u-align-center u-custom-font u-font-montserrat u-text u-text-2">
+                                      <%= food.title %>
+                                    </h4>
+                                    <button type="button" class="button-order" onclick="sendOrder(this)"
+                                      data-title="<%= food.title %>" data-price="<%= food.price %>">
+                                      <%= food.price %>
+                                    </button>
                                   </div>
-                                  <% }) %>
-                              </div>
-                              </br>
+                                </div>
+                                <% }) %>
                             </div>
+                            </br>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="u-size-30 u-size-60-md">
-                      <div class="u-layout-col">
-                        <div class="u-size-30">
-                          <div class="u-layout-row">
-                            <div
-                              class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-60 u-layout-cell-2">
-                              <div id="order-container"
-                                class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-6">
+                  </div>
+                  <div class="u-size-30 u-size-60-md">
+                    <div class="u-layout-col">
+                      <div class="u-size-30">
+                        <div class="u-layout-row">
+                          <div
+                            class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-60 u-layout-cell-2">
+                            <div id="order-container"
+                              class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-6">
 
-                                <!-- ORDER DETAIL -->
-                                <h2 id="order-list-title">Order List</h2>
-                                <ol class="orders-list" id="display-order">
-                                  <% orders.forEach((orderDetail)=> { %>
-                                    <li onclick="confirmDelete(this)" id="<%= orderDetail.orderId %>"
-                                      data-room="<%= orderDetail.roomName %>" data-user="<%= orderDetail.orderUser %>"
-                                      data-food="<%= orderDetail.foodTitle %>" data-price="<%= orderDetail.foodPrice %>"
-                                      data-time="<%= orderDetail.orderTime %>"
-                                      data-amount="<% orderDetail.foodAmount %>">
+                              <!-- ORDER DETAIL -->
+                              <h2 id="order-list-title">WOWTEA - Milo Dầm & Trà Sữa - Cô Bắc</h2>
+                              <ol class="orders-list" id="display-order">
+                                <% orders.forEach((orderDetail)=> { %>
+                                  <li onclick="confirmDelete(this)" id="<%= orderDetail.orderId %>"
+                                    data-room="<%= orderDetail.roomName %>" data-user="<%= orderDetail.orderUser %>"
+                                    data-food="<%= orderDetail.foodTitle %>" data-price="<%= orderDetail.foodPrice %>"
+                                    data-time="<%= orderDetail.orderTime %>" data-amount="<% orderDetail.foodAmount %>">
 
-                                      <span class="order-detail">
-                                        <img class="user-avatar" alt="User Avatar" src="https://haycafe.vn/wp-content/uploads/2022/03/hinh-meo-hai-huoc.jpg">
-                                        <div class="order-text">
-                                          <label id="order-info-1"><label id="user-txt"><%= orderDetail.orderUser %> </label><label id="order-time-txt"><%=orderDetail.orderTime %></label></label>
-                                          <label id="order-info-2"><label id="food-amount-txt"><%=orderDetail.foodAmount %> x </label><%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %></label>
-                                        </div>
-                                      </span>
-                                    </li>
-                                    <% }) %>
-                                </ol>
-                                <!-- ORDER DETAIL -->
+                                    <span class="order-detail">
+                                      <img class="user-avatar" alt="User Avatar"
+                                        src="https://haycafe.vn/wp-content/uploads/2022/03/hinh-meo-hai-huoc.jpg">
+                                      <div class="order-text">
+                                        <div id="order-info-1"><label id="user-txt">
+                                            <%= orderDetail.orderUser %>
+                                          </label><label id="order-time-txt">
+                                            <%=orderDetail.orderTime %>
+                                          </label></div>
+                                        <div id="order-info-2"><label id="food-amount-txt">
+                                            <%=orderDetail.foodAmount %> x
+                                          </label><label id="order-title-txt">
+                                            <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %>
+                                          </label></div>
+                                      </div>
+                                    </span>
+                                  </li>
+                                  <% }) %>
+                              </ol>
+                              <!-- ORDER DETAIL -->
 
-                              </div>
                             </div>
                           </div>
                         </div>
+                      </div>
 
 
-                        <div class="u-size-30">
-                          <div class="u-layout-row">
-                            <!-- SUMMARY -->
-                            <div
-                              class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-35 u-layout-cell-3">
-                              <div
-                                class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-7">
+                      <div class="u-size-30">
+                        <div class="u-layout-row">
+                          <!-- SUMMARY -->
+                          <div
+                            class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-60 u-layout-cell-3">
+                            <div class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-7">
 
-                                <h2 id="order-list-title">Summary Order (Beta)</h2>
+                              <h2 id="order-list-title">Chưa Code =))</h2>
 
-                                <div class="summary-container">
+                              <div class="summary-order-container">
 
-                                  <div class="summary-food">
-                                    <img
-                                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU"
-                                      class="food-image">
-                                    <div class="food-text">
-                                      <span>Food Name</span>
-                                      <span>Price: 50$</span>
-                                      <span>Quantity: 2</span>
-                                      <span>Total: $100</span>
-                                    </div>
+                                <div class="summary-detail">
+                                  <div class="summary-info">
+                                    <img class="sum-food-image" src="">
+                                    <span class="sum-qty-txt">2 x </span>
+                                    <span class="sum-food-txt">Milo dầm thập cẩm kem trứng WOW </span>
                                   </div>
-
-                                  <div class="summary-food">
-                                    <img
-                                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU"
-                                      class="food-image">
-                                    <div class="food-text">
-                                      <span>Food Name</span>
-                                      <span>Price: 50$</span>
-                                      <span>Quantity: 2</span>
-                                      <span>Total: $100</span>
-                                    </div>
+                                  <div class="sum-total-txt">
+                                    <span>1,000,000đ</span>
                                   </div>
+                                </div>
 
-                                  <div class="summary-food">
-                                    <img
-                                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU"
-                                      class="food-image">
-                                    <div class="food-text">
-                                      <span>Food Name</span>
-                                      <span>Price: 50$</span>
-                                      <span>Quantity: 2</span>
-                                      <span>Total: $100</span>
-                                    </div>
-                                  </div>
+                              </div>
 
-                                  <div class="summary-food">
-                                    <img
-                                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU"
-                                      class="food-image">
-                                    <div class="food-text">
-                                      <span>Food Name</span>
-                                      <span>Price: 50$</span>
-                                      <span>Quantity: 2</span>
-                                      <span>Total: $100</span>
-                                    </div>
-                                  </div>
-
-                                  <div class="summary-food">
-                                    <img
-                                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU"
-                                      class="food-image">
-                                    <div class="food-text">
-                                      <span>Food Name</span>
-                                      <span>Price: 50$</span>
-                                      <span>Quantity: 2</span>
-                                      <span>Total: $100</span>
-                                    </div>
-                                  </div>
-
-                                  <div class="summary-food">
-                                    <img
-                                      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU"
-                                      class="food-image">
-                                    <div class="food-text">
-                                      <span>Food Name</span>
-                                      <span>Price: 50$</span>
-                                      <span>Quantity: 2</span>
-                                      <span>Total: $100</span>
-                                    </div>
-                                  </div>
-                                  
+                              <div class="subtotal-container">
+                                <div class="subtotal-info">
+                                  <span class="subtotal-txt">Subtotal (13 items)</span>
+                                  <span class="subtotal-price-txt">1,000,000đ</span>
                                 </div>
                               </div>
+
                             </div>
-                            <!-- SUMMARY -->
-                            <!-- LOG ACTIVITIES -->
-                            <div
+                          </div>
+                          <!-- SUMMARY -->
+                          <!-- LOG ACTIVITIES -->
+                          <!-- <div
                               class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-25 u-layout-cell-4">
                               <div
                                 class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-8">
-                                <h2 id="order-list-title">Comming Soon</h2>
+                                <h2 id="order-list-title">Coming Soon</h2>
                               </div>
-                            </div>
-                            <!-- LOG ACTIVITIES -->
-                          </div>
+                            </div> -->
+                          <!-- LOG ACTIVITIES -->
                         </div>
-
-
                       </div>
+
+
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-          </section>
-
-          <!-- POPUP Define User Name -->
-          <div class="popup" id="popup-username" style="display: none;">
-            <h2>What should i call you?</h2>
-            <input id="userName" type="text" placeholder="Your Name" required>
-            <input id="confirmBtn" onclick="confirmUserName()" value="Yes, please!">
           </div>
+
+        </section>
+
+        <!-- POPUP Define User Name -->
+        <div class="popup" id="popup-username" style="display: none;">
+          <h2>What should i call you?</h2>
+          <input id="userName" type="text" placeholder="Your Name" required>
+          <input id="confirmBtn" onclick="confirmUserName()" value="Yes, please!">
+        </div>
 
       </form>
 

@@ -190,8 +190,8 @@ function appendMessage(orderDetail) {
             <span class="order-detail">
                 <img class="user-avatar" alt="User Avatar" src="https://haycafe.vn/wp-content/uploads/2022/03/hinh-meo-hai-huoc.jpg">
                 <div class="order-text">
-                  <label id="order-info-1"><label id="user-txt">${orderDetail.orderUser} </label><label id="order-time-txt">${orderDetail.orderTime}</label></label>
-                  <label id="order-info-2"><label id="food-amount-txt">${orderDetail.foodAmount} x </label>${orderDetail.foodTitle} x ${orderDetail.foodPrice}</label>
+                  <div id="order-info-1"><label id="user-txt">${orderDetail.orderUser} </label><label id="order-time-txt">${orderDetail.orderTime}</label></div>
+                  <div id="order-info-2"><label id="food-amount-txt">${orderDetail.foodAmount} x </label>${orderDetail.foodTitle} x ${orderDetail.foodPrice}</div>
                 </div>
             </span>
         `;

@@ -125,7 +125,8 @@ body {
   max-width: 500px;
   height: 350px;
   padding: 5px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   cursor: pointer;
 }
 
@@ -175,6 +176,11 @@ body {
   cursor: pointer;
 }
 
+#order-title-txt {
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
 #order-info-1 {
   display: flex;
   align-items: center;
@@ -183,6 +189,11 @@ body {
 #order-info-1:hover {
   color: red;
   cursor: pointer;
+}
+
+#order-info-2 {
+  max-width: 330px;
+  overflow-x: auto;
 }
 
 #order-info-2:hover {
@@ -260,40 +271,68 @@ ol span:before {
 }
 
 /* SUMMARY SECTION */
-.summary-container {
+.summary-order-container {
   align-items: center;
-  width: 280px;
-  height: 300px;
+  width: 500px;
+  height: 250px;
   overflow-y: auto;
 }
 
-.summary-food {
+.summary-detail {
   display: flex;
-  align-items: center;
-  white-space: nowrap;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.603) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   margin: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+
 }
 
-.food-image {
+.summary-info {
+  display: flex;
+  margin-left: 10px;
+  width: 100%;
+  max-width: 80%;
+  align-items: center;
+}
+
+.sum-food-txt {
+  width: calc(100% - 90px);
+}
+
+.sum-qty-txt {
+  width: 45px;
+}
+
+.sum-total-txt {
+  align-items: center;
+}
+
+.sum-food-image {
   width: 50px;
   height: 50px;
   border-radius: 10px;
   margin-right: 10px;
-  margin-left: 10px;
+  background-color: #ffffff;
 }
 
-.food-text {
+.subtotal-container {
+  width: 500px;
+  height: 50px;
+  padding: 10px;
+  box-shadow: rgba(255, 1, 1, 1) 2px 2px 2px 2px;
+}
+
+.subtotal-info {
   display: flex;
-  flex-direction: column;
-  margin-left: 10px;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.food-text span {
-  white-space: nowrap;
+.subtotal-price-txt {
+  align-items: flex-end;
 }
-
 
 /* MENU SECTION */
 .u-section-1 {
