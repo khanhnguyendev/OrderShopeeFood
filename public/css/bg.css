@@ -10,15 +10,15 @@
   margin: 0;
   scrollbar-color: var(--scroll-thumb-color, grey) var(--scroll-track, transparent);
   scrollbar-width: thin;
-  --scroll-size: 15px;
+  --scroll-size: 8px;
   --scroll-radius: 20px;
   --scroll-track: rgb(255 255 255 / 10%);
-  --scroll-thumb: linear-gradient(45deg, #02198d, #d1d1d124);
+  --scroll-thumb: linear-gradient(45deg, #00ADB5, #393E46);
 }
 
 ::-webkit-scrollbar {
-  width: var(--scroll-size, 10px);
-  height: var(--scroll-size, 10px);
+  width: var(--scroll-size, 5px);
+  height: var(--scroll-size, 5px);
 }
 
 ::-webkit-scrollbar-track {
