@@ -179,7 +179,7 @@ function appendMessage(orderDetail) {
 
     if (orderEl) {
         // DUPLICATE ORDER
-        orderEl.querySelector("#food-amount").innerHTML = `[Qty: ${orderDetail.foodAmount}]`;
+        orderEl.querySelector("#food-amount-txt").innerHTML = `${orderDetail.foodAmount} x `;
     } else {
         // NEW ORDER
         const el = document.createElement("li");
@@ -192,10 +192,12 @@ function appendMessage(orderDetail) {
         el.setAttribute("data-time", orderDetail.orderTime);
 
         el.innerHTML = `
-            <span id="order-info">
-                <label id="red-txt">${orderDetail.orderUser}</label> ordered
-                <label id="red-txt">${orderDetail.foodTitle}</label> x ${orderDetail.foodPrice} <br> [${orderDetail.orderTime}]
-                <label id="food-amount">[Qty: ${orderDetail.foodAmount}]</label>
+            <span class="order-detail">
+                <img class="user-avatar" alt="User Avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU">
+                <div class="order-text">
+                  <label><label id="user-txt">${orderDetail.orderUser} </label><label id="order-time-txt">${orderDetail.orderTime}</label></label>
+                  <label><label id="food-amount-txt">${orderDetail.foodAmount} x </label>${orderDetail.foodTitle} x ${orderDetail.foodPrice}</label>
+                </div>
             </span>
         `;
 

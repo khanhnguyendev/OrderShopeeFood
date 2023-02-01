@@ -95,18 +95,13 @@
                                       data-food="<%= orderDetail.foodTitle %>" data-price="<%= orderDetail.foodPrice %>"
                                       data-time="<%= orderDetail.orderTime %>"
                                       data-amount="<% orderDetail.foodAmount %>">
-                                      <span id="order-info">
-                                        <label id="red-txt">
-                                          <%= orderDetail.orderUser %>
-                                        </label>
-                                        order
-                                        <label id="red-txt">
-                                          <%= orderDetail.foodTitle %>
-                                        </label>
-                                        x <%=orderDetail.foodPrice %> </br> [<%=orderDetail.orderTime %>]
-                                            <label id="food-amount">
-                                              [Qty: <%=orderDetail.foodAmount %>]
-                                            </label>
+
+                                      <span class="order-detail">
+                                        <img class="user-avatar" alt="User Avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU">
+                                        <div class="order-text">
+                                          <label><label id="user-txt"><%= orderDetail.orderUser %> </label><label id="order-time-txt"><%=orderDetail.orderTime %></label></label>
+                                          <label><label id="food-amount-txt"><%=orderDetail.foodAmount %> x </label><%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %></label>
+                                        </div>
                                       </span>
                                     </li>
                                     <% }) %>
@@ -231,8 +226,10 @@
                             </div>
                             <!-- SUMMARY -->
                             <!-- LOG ACTIVITIES -->
-                            <div class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-25 u-layout-cell-4">
-                              <div class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-8">
+                            <div
+                              class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-25 u-layout-cell-4">
+                              <div
+                                class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-8">
                                 <h2 id="order-list-title">Comming Soon</h2>
                               </div>
                             </div>
