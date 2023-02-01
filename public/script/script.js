@@ -22,7 +22,7 @@ function confirmUserName() {
     userName = txtuserName.value;
     document.getElementById("popup-username").style.display = "none";
     setCookie('userName', userName, 1);
-    appendLog('You joined')
+    // appendLog('You joined')
     socket.emit('new-user', roomName, userName)
 }
 
@@ -145,17 +145,13 @@ socket.on('room-created', room => {
     roomContainer.append(roomLink)
 })
 
-socket.on('chat-message', data => {
-    appendMessage(data.message)
-})
+// socket.on('user-connected', name => {
+//     appendLog(`${name} connected`)
+// })
 
-socket.on('user-connected', name => {
-    appendLog(`${name} connected`)
-})
-
-socket.on('user-disconnected', name => {
-    appendLog(`${name} disconnected`)
-})
+// socket.on('user-disconnected', name => {
+//     appendLog(`${name} disconnected`)
+// })
 
 /**
  * Handle Order Status & Display Order
@@ -207,11 +203,11 @@ function appendMessage(orderDetail) {
 }
 
 
-function appendLog(log) {
-    const sumElement = document.createElement('li')
-    sumElement.innerText = log
-    summaryContainer.append(logElement)
-}
+// function appendLog(log) {
+//     const sumElement = document.createElement('li')
+//     sumElement.innerText = log
+//     summaryContainer.append(logElement)
+// }
 
 /**
  * Delete Order
