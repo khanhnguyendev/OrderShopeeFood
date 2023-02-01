@@ -152,6 +152,7 @@ body .twitter svg {
   padding: 5px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   overflow: auto;
+  cursor: pointer;
 }
 
 .order-detail {
@@ -161,10 +162,16 @@ body .twitter svg {
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.603) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   margin: 10px;
+  cursor: pointer;
+}
+
+.order-detail:hover {
+  cursor: pointer;
 }
 
 #order-list-title {
   margin-top: -10px;
+  font-size: 20px;
   color: aqua;
 }
 
@@ -175,13 +182,33 @@ body .twitter svg {
   text-transform: uppercase;
 }
 
+#user-txt:hover {
+  cursor: pointer;
+}
+
 #order-time-txt {
   font-size: 12px;
   color: gray;
   text-decoration: none;
 }
 
-#food-amount-txt {}
+#order-time-txt:hover {
+  cursor: pointer;
+}
+
+#food-amount-txt:hover {
+  cursor: pointer;
+}
+
+#order-info-1:hover {
+  color: red;
+  cursor: pointer;
+}
+
+#order-info-2:hover {
+  color: red;
+  cursor: pointer;
+}
 
 .user-avatar {
   width: 50px;
@@ -290,7 +317,7 @@ ol span:before {
 
 /* MENU SECTION */
 .u-section-1 {
-  margin: 1.5rem 0 0 0;
+  margin: 1rem 0 0 0;
 }
 
 .disable-event {

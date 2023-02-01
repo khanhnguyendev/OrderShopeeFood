@@ -70,6 +70,7 @@ if (cookieUserName == null || cookieUserName.length < 1) {
 function notify(type, mainMessage, subMessage) {
 
     toastr.options = {
+        positionClass: "toast-top-left",
         progressBar: true,
         timeOut: 3000,
         extendedTimeOut: 2000,
@@ -195,8 +196,8 @@ function appendMessage(orderDetail) {
             <span class="order-detail">
                 <img class="user-avatar" alt="User Avatar" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsYWKr4D2H-8MuRFs-mhahtrvUO6pGGFAYCw&usqp=CAU">
                 <div class="order-text">
-                  <label><label id="user-txt">${orderDetail.orderUser} </label><label id="order-time-txt">${orderDetail.orderTime}</label></label>
-                  <label><label id="food-amount-txt">${orderDetail.foodAmount} x </label>${orderDetail.foodTitle} x ${orderDetail.foodPrice}</label>
+                  <label id="order-info-1"><label id="user-txt">${orderDetail.orderUser} </label><label id="order-time-txt">${orderDetail.orderTime}</label></label>
+                  <label id="order-info-2"><label id="food-amount-txt">${orderDetail.foodAmount} x </label>${orderDetail.foodTitle} x ${orderDetail.foodPrice}</label>
                 </div>
             </span>
         `;
