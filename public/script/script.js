@@ -1,6 +1,6 @@
 const socket = io()
 const orderContainer = document.getElementById('display-order')
-const logContainer = document.getElementById('log-container')
+const summaryContainer = document.getElementById('log-container')
 const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container')
 const orderButton = document.querySelectorAll('#button-add')
@@ -208,9 +208,9 @@ function appendMessage(orderDetail) {
 
 
 function appendLog(log) {
-    const logElement = document.createElement('li')
-    logElement.innerText = log
-    logContainer.append(logElement)
+    const sumElement = document.createElement('li')
+    sumElement.innerText = log
+    summaryContainer.append(logElement)
 }
 
 /**

@@ -18,31 +18,6 @@ body {
   /* background-color: #222831 !important; */
 }
 
-body .dribbble {
-  position: fixed;
-  display: block;
-  right: 20px;
-  bottom: 20px;
-}
-
-body .dribbble img {
-  display: block;
-  width: 76px;
-}
-
-body .twitter {
-  position: fixed;
-  display: block;
-  right: 112px;
-  bottom: 14px;
-}
-
-body .twitter svg {
-  width: 24px;
-  height: 24px;
-  fill: white;
-}
-
 /** POPUP DEFINE USERNAME */
 .popup {
   z-index: 10000;
@@ -177,9 +152,9 @@ body .twitter svg {
 
 #user-txt {
   font-size: 18px;
-  font-weight: bold;
-  color: rgb(255, 0, 0);
+  font-weight: 700;
   text-transform: uppercase;
+  color: rgb(255, 0, 0);
 }
 
 #user-txt:hover {
