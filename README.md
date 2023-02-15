@@ -1,7 +1,7 @@
 
 # GROUP ORDER SHOPEE FOOD
 
-Using for order by group at ShopeeFood
+Using for Group Order at ShopeeFood
 
 Site: https://shopeefood.vn
 
