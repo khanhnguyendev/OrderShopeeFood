@@ -63,7 +63,7 @@
                                     <h4 class="u-align-center u-custom-font u-font-montserrat u-text u-text-2">
                                       <%= food.title %>
                                     </h4>
-                                    <button type="button" class="button-order" onclick="sendOrder(this)"
+                                    <button type="button" class="button-order" onclick="showPopupConfirmOrder(this)"
                                       data-title="<%= food.title %>" data-price="<%= food.price %>">
                                       <%= food.price %>
                                     </button>
@@ -318,6 +318,18 @@
     </div> -->
     <!-- BACKGROUND -->
 
+  </div>
+
+  <!-- POPUP Confirm Order -->
+  <div class="modal-container">
+    <div class="popup-confirm" id="popup-confirm" style="display: none;">
+      <h2>Confirm your order</h2>
+      <input id="userName" type="text" disabled placeholder="Your Name">
+      <input id="userName" type="text" disabled placeholder="Your Name">
+      <input id="userName" type="text" disabled placeholder="Your Name">
+      <input id="confirmBtn" onclick="sendOrder()" value="Order">
+      <input id="confirmBtn" onclick="closePopupConfirmOrder()" value="Close">
+    </div>
   </div>
 
 </body>

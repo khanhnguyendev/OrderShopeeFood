@@ -107,6 +107,25 @@ body::before {
   cursor: pointer;
 }
 
+/** POPUP CONFIRM ORDER */
+.modal-container.open {
+  position: fixed;
+  inset: 0px;
+  pointer-events: auto;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 40;
+  background-color: rgb(0 0 0 / 90%);
+}
+.popup-confirm {
+  display: block;
+  background: #000;
+}
+
 /* Order Button */
 .button-order {
   cursor: pointer;
@@ -118,7 +137,7 @@ body::before {
   color: #FF2E63;
   display: inline-block;
   padding: 10px 20px 10px 20px;
-  border: 3px solid #EAEAEA;
+  border: 1px solid #EAEAEA;
   border-radius: 20px;
   margin: 10px 0;
 }
@@ -126,7 +145,7 @@ body::before {
 .button-order:hover {
   background-color: #FF2E63;
   color: #ffffff;
-  border: 3px solid #FF2E63;
+  border: 1px solid #FF2E63;
 }
 
 /* ORDER LIST SECTION */
@@ -359,6 +378,7 @@ ol span:before {
 
 .u-section-1 .u-layout-cell-1 {
   min-height: 838px;
+  margin-right: 5px;
 }
 
 .u-section-1 .u-container-layout-1 {
@@ -526,7 +546,7 @@ ol span:before {
 }
 
 .u-section-1 .u-layout-cell-2 {
-  min-height: 411px;
+  min-height: 405px;
 }
 
 .u-section-1 .u-container-layout-6 {

@@ -65,6 +65,21 @@ if (cookieUserName == null || cookieUserName.length < 1) {
 }
 
 /**
+ * Popup confirm order
+ */
+function showPopupConfirmOrder() {
+    document.getElementsByClassName("modal-container")[0].className += " open"
+    document.getElementById("popup-confirm").style.display = "block";
+}
+
+function closePopupConfirmOrder() {
+    document.getElementsByClassName("modal-container")[0].className += " open"
+    document.getElementById("modal-container").style.display = "block";
+}
+
+
+
+/**
  * Notify message
  */
 function notify(type, mainMessage, subMessage) {
