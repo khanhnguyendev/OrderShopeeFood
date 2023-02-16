@@ -12,11 +12,12 @@
   <link rel="stylesheet" href="/css/bg.css">
   <link rel="stylesheet" href="/css/toastr.min.css">
 
-  <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <!-- <script defer src="http://localhost:3000/socket.io/socket.io.js"></script> -->
+  <script defer src="/script/socket.io.js"></script>
   <script defer src="/script/jquery.js"></script>
   <script defer src="/script/nicepage.js"></script>
   <script defer src="/script/script.js"></script>
-  <script defer src="/script/background.js"></script>
+  <!-- <script defer src="/script/background.js"></script> -->
   <script defer src="/script/toastr.min.js"></script>
 
   <script>
@@ -86,7 +87,7 @@
                               class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-6">
 
                               <!-- ORDER DETAIL -->
-                              <h2 id="order-list-title">WOWTEA - Milo Dầm & Trà Sữa - Cô Bắc</h2>
+                              <h2 id="order-list-title">Sinh Tố Vân - Điện Biên Phủ</h2>
                               <ol class="orders-list" id="display-order">
                                 <% orders.forEach((orderDetail)=> { %>
                                   <li onclick="confirmDelete(this)" id="<%= orderDetail.orderId %>"
@@ -189,7 +190,7 @@
     </section>
 
     <!-- BACKGROUND -->
-    <div class="universe">
+    <!-- <div class="universe">
       <div class="universe-container">
         <div class="content">
           <canvas id="universe"></canvas>
@@ -314,7 +315,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- BACKGROUND -->
 
   </div>
