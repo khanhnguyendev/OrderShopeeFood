@@ -170,6 +170,7 @@ socket.on('room-created', room => {
 socket.on('receive-order', orderDetail => {
     switch (orderDetail.status) {
       case SUCCESS:
+        closePopupConfirmOrder();
         appendMessage(orderDetail);
         notify(TOASTR_SUCCESS, `Order Success`, `${orderDetail.orderUser} : ${orderDetail.foodTitle}`);
         break;
