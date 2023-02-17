@@ -67,14 +67,18 @@ if (cookieUserName == null || cookieUserName.length < 1) {
 /**
  * Popup confirm order
  */
-function showPopupConfirmOrder() {
+function showPopupConfirmOrder(e) {
     document.getElementsByClassName("modal-container")[0].className += " open"
     document.getElementById("popup-confirm").style.display = "block";
+
+    // Fill form
+    document.getElementById("txtFoodName").value = e.getAttribute("data-title")
+    document.getElementById("txtFoodPrice").value = e.getAttribute('data-price')
 }
 
 function closePopupConfirmOrder() {
-    document.getElementsByClassName("modal-container")[0].className += " open"
-    document.getElementById("modal-container").style.display = "block";
+    document.getElementsByClassName("modal-container")[0].classList.remove('open')
+    document.getElementById("popup-confirm").style.display = "none";
 }
 
 
@@ -132,10 +136,11 @@ function sendOrder(event) {
         const orderDetail = {
             roomName: roomName,
             orderUser: userName,
-            foodTitle: event.getAttribute("data-title"),
-            foodPrice: event.getAttribute("data-price"),
+            foodTitle: document.getElementById("txtFoodName").value,
+            foodPrice: document.getElementById("txtFoodPrice").value,
             orderTime: getCurrentTime(),
-            foodAmount: 1,
+            foodAmount: document.getElementById("txtFoodQty").value,
+            note: document.getElementById("txtNote").value
         };
 
         socket.emit("send-order", orderDetail);
@@ -190,6 +195,7 @@ function appendMessage(orderDetail) {
     if (orderEl) {
         // DUPLICATE ORDER
         orderEl.querySelector("#food-amount-txt").innerHTML = `${orderDetail.foodAmount} x `;
+        orderEl.querySelector("#note-txt").innerHTML = `Note: ${orderDetail.note}`;
     } else {
         // NEW ORDER
         const el = document.createElement("li");
@@ -207,6 +213,7 @@ function appendMessage(orderDetail) {
                 <div class="order-text">
                   <div id="order-info-1"><label id="user-txt">${orderDetail.orderUser} </label><label id="order-time-txt">${orderDetail.orderTime}</label></div>
                   <div id="order-info-2"><label id="food-amount-txt">${orderDetail.foodAmount} x </label>${orderDetail.foodTitle} x ${orderDetail.foodPrice}</div>
+                  <div id="order-info-2"><label id="note-txt">Note: ${orderDetail.note}</label></div>
                 </div>
             </span>
         `;

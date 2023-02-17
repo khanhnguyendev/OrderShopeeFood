@@ -207,6 +207,9 @@ io.on("connection", (socket) => {
           orderReq.orderId = order.orderId;
           orderReq.foodAmount = order.foodAmount;
 
+          // Update note
+          order.note = orderReq.note;
+
           // Duplicate Order flag
           isDuplicateOrder = true;
           break;
@@ -235,7 +238,7 @@ io.on("connection", (socket) => {
           }
           logWriter(
             DATA,
-            `[New order] [User: ${orderReq.orderUser}] [ID: ${orderReq.orderId}] [${orderReq.foodTitle} ${orderReq.foodPrice} ${orderReq.orderTime}]`
+            `[New order] [User: ${orderReq.orderUser}] [ID: ${orderReq.orderId}] [${orderReq.foodTitle} ${orderReq.foodPrice} ${orderReq.orderTime} ${orderReq.note}]`
           );
 
           // ORDER SUCCESS

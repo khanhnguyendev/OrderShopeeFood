@@ -122,8 +122,63 @@ body::before {
   background-color: rgb(0 0 0 / 90%);
 }
 .popup-confirm {
+  width: 500px;
+  background: #333333;
+  border-radius: 10px;
+  border: #cacaca solid 1px;
+}
+
+.popup-confirm input,
+.popup-confirm input {
+  border: 0;
+  background: none;
   display: block;
-  background: #000;
+  margin: 20px auto;
+  text-align: center;
+  border: 2px solid #3498db;
+  padding: 14px 10px;
+  width: 250px;
+  outline: none;
+  color: white;
+  border-radius: 24px;
+  transition: 0.25s;
+}
+
+.popup-confirm input[type="text"]:focus {
+  width: 280px;
+  -webkit-animation: 9s colorChange alternate;
+  transition height 0.3s,
+  width 0.3s 0.1s input: focus ~ .border
+}
+
+#orderConfirmBtn {
+  width: 170px;
+  background: none;
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+  border: 2px solid #2ecc71;
+  padding: 14px 40px;
+  outline: none;
+  color: white;
+  border-radius: 24px;
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+#orderCloseBtn {
+  width: 170px;
+  background: none;
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+  border: 2px solid #2ecc71;
+  padding: 14px 40px;
+  outline: none;
+  color: white;
+  border-radius: 24px;
+  transition: 0.25s;
+  cursor: pointer;
 }
 
 /* Order Button */
@@ -213,6 +268,8 @@ body::before {
 #order-info-1 {
   display: flex;
   align-items: center;
+  max-width: 330px;
+  overflow-x: auto;
 }
 
 #order-info-1:hover {

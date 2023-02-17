@@ -103,12 +103,19 @@
                                             <%= orderDetail.orderUser %>
                                           </label><label id="order-time-txt">
                                             <%=orderDetail.orderTime %>
-                                          </label></div>
+                                          </label>
+                                        </div>
                                         <div id="order-info-2"><label id="food-amount-txt">
                                             <%=orderDetail.foodAmount %> x
                                           </label><label id="order-title-txt">
                                             <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %>
-                                          </label></div>
+                                          </label>
+                                        </div>
+                                        <div id="order-info-2">
+                                          <label id="note-txt">
+                                            Note: <%=orderDetail.note %>
+                                          </label>
+                                        </div>
                                       </div>
                                     </span>
                                   </li>
@@ -324,11 +331,12 @@
   <div class="modal-container">
     <div class="popup-confirm" id="popup-confirm" style="display: none;">
       <h2>Confirm your order</h2>
-      <input id="userName" type="text" disabled placeholder="Your Name">
-      <input id="userName" type="text" disabled placeholder="Your Name">
-      <input id="userName" type="text" disabled placeholder="Your Name">
-      <input id="confirmBtn" onclick="sendOrder()" value="Order">
-      <input id="confirmBtn" onclick="closePopupConfirmOrder()" value="Close">
+      <input id="txtFoodName" type="text" disabled placeholder="Food Name">
+      <input id="txtFoodPrice" type="text" disabled placeholder="Price">
+      <input id="txtFoodQty" type="number" name="qty" min="1" max="100" value="1">
+      <input id="txtNote" type="text" placeholder="Note">
+      <input id="orderConfirmBtn" onclick="sendOrder()" value="Order">
+      <input id="orderCloseBtn" onclick="closePopupConfirmOrder()" value="Close">
     </div>
   </div>
 
