@@ -15,12 +15,6 @@ const DEBUG = "DEBUG";
 const SUCCESS = "200";
 const ERROR = "400";
 const AUTHORITY = "401";
-
-import("node-fetch")
-  .then((module) => {
-    const fetch = module.default;
-  })
-  .catch((error) => console.error(error));
 let shopUrl = "";
 
 app.set("views", "./views");
@@ -354,73 +348,84 @@ async function fetchShopeeFood(req, res) {
  * Get Restaurant ID
  */
 async function getResId(req, res) {
-  return fetch(
-    "https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=" +
-      shopUrl.replace("https://shopeefood.vn/", ""),
-    {
-      method: "GET",
-      headers: {
-        "x-foody-access-token": "",
-        "x-foody-api-version": "1",
-        "x-foody-app-type": "1004",
-        "x-foody-client-id": "",
-        "x-foody-client-language": "en",
-        "x-foody-client-type": "1",
-        "x-foody-client-version": "3.0.0",
-      },
-    }
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not OK");
+  import("node-fetch")
+  .then((module) => {
+    const fetch = module.default;
+
+    fetch(
+      "https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=" +
+        shopUrl.replace("https://shopeefood.vn/", ""),
+      {
+        method: "GET",
+        headers: {
+          "x-foody-access-token": "",
+          "x-foody-api-version": "1",
+          "x-foody-app-type": "1004",
+          "x-foody-client-id": "",
+          "x-foody-client-language": "en",
+          "x-foody-client-type": "1",
+          "x-foody-client-version": "3.0.0",
+        },
       }
-      return response.json();
-    })
-    .then((data) => {
-      logWriter(DEBUG, "Get delivery info successful");
-      getDeliveryDishes(data, req, res);
-    })
-    .catch((error) => {
-      logWriter(
-        DEBUG,
-        "There has been a problem with your fetch operation" + error
-      );
-      logWriter(DEBUG, "getResId " + error);
-    });
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not OK");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        logWriter(DEBUG, "Get delivery info successful");
+        getDeliveryDishes(data, req, res);
+      })
+      .catch((error) => {
+        logWriter(
+          DEBUG,
+          "There has been a problem with your fetch operation" + error
+        );
+        logWriter(DEBUG, "getResId " + error);
+      });
+  })
+  .catch((error) => console.error(error));
 }
 
 async function getDeliveryDishes(deliveryInfo, req, res) {
-  let urlAPI =
-    "https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=" +
-    deliveryInfo.reply.delivery_id;
-  fetch(urlAPI, {
-    method: "GET",
-    headers: {
-      "x-foody-client-id": "",
-      "x-foody-client-type": "1",
-      "x-foody-app-type": "1004",
-      "x-foody-client-version": "3.0.0",
-      "x-foody-api-version": "1",
-      "x-foody-client-language": "vi",
-      "x-foody-access-token":
-        "6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b",
-    },
+  let urlAPI = "https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=" + deliveryInfo.reply.delivery_id;
+
+  import("node-fetch")
+  .then((module) => {
+    const fetch = module.default;
+
+    fetch(urlAPI, {
+      method: "GET",
+      headers: {
+        "x-foody-client-id": "",
+        "x-foody-client-type": "1",
+        "x-foody-app-type": "1004",
+        "x-foody-client-version": "3.0.0",
+        "x-foody-api-version": "1",
+        "x-foody-client-language": "vi",
+        "x-foody-access-token":
+          "6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not OK");
+        }
+        return response.json();
+      })
+      .then((json) => {
+        logWriter(DEBUG, "Get delivery detail successful");
+        // Filter menu list
+        getMenuJson(json, req, res);
+      })
+      .catch((error) => {
+        logWriter(DEBUG, "There has been a problem with your fetch operation");
+        logWriter(DEBUG, "getDeliveryDishes " + error);
+      });
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not OK");
-      }
-      return response.json();
-    })
-    .then((json) => {
-      logWriter(DEBUG, "Get delivery detail successful");
-      // Filter menu list
-      getMenuJson(json, req, res);
-    })
-    .catch((error) => {
-      logWriter(DEBUG, "There has been a problem with your fetch operation");
-      logWriter(DEBUG, "getDeliveryDishes " + error);
-    });
+  .catch((error) => console.error(error));
 }
 
 /**
