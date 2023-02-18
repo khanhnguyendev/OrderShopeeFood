@@ -201,7 +201,7 @@ io.on("connection", (socket) => {
           order.foodTitle === orderReq.foodTitle
         ) {
           // Update food amount
-          order.foodAmount = parseInt(order.foodAmount) + 1;
+          order.foodAmount = parseInt(order.foodAmount) + orderReq.foodAmount;
 
           // Update order request
           orderReq.orderId = order.orderId;

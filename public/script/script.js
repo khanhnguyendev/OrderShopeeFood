@@ -170,7 +170,6 @@ socket.on('room-created', room => {
 socket.on('receive-order', orderDetail => {
     switch (orderDetail.status) {
       case SUCCESS:
-        closePopupConfirmOrder();
         appendMessage(orderDetail);
         notify(TOASTR_SUCCESS, `Order Success`, `${orderDetail.orderUser} : ${orderDetail.foodTitle}`);
         break;
@@ -190,6 +189,9 @@ socket.on('clear-order', (orderId) => {
 
 
 function appendMessage(orderDetail) {
+    // Close popup confirm
+    closePopupConfirmOrder();
+    
     const orderId = orderDetail.orderId;
     const orderEl = document.getElementById(orderId);
 

@@ -325,19 +325,23 @@
     </div> -->
     <!-- BACKGROUND -->
 
-  </div>
 
   <!-- POPUP Confirm Order -->
   <div class="modal-container">
     <div class="popup-confirm" id="popup-confirm" style="display: none;">
-      <h2>Confirm your order</h2>
-      <input id="txtFoodName" type="text" disabled placeholder="Food Name">
-      <input id="txtFoodPrice" type="text" disabled placeholder="Price">
-      <input id="txtFoodQty" type="number" name="qty" min="1" max="100" value="1">
-      <input id="txtNote" type="text" placeholder="Note">
-      <input id="orderConfirmBtn" onclick="sendOrder()" value="Order">
-      <input id="orderCloseBtn" onclick="closePopupConfirmOrder()" value="Close">
+      <div class="popup-confirm-info">
+        <span id="popup-confirm-title">Confirm your order</span>
+        <input id="txtFoodName" type="text" disabled placeholder="Food Name">
+        <input id="txtFoodPrice" type="text" disabled placeholder="Price">
+        <input id="txtFoodQty" type="number" name="qty" min="1" max="100" value="1">
+        <input id="txtNote" type="text" placeholder="Note">
+      </div>
+      <div class="popup-confirm-btn">
+        <input id="orderCloseBtn" onclick="closePopupConfirmOrder()" value="Close">
+        <input id="orderConfirmBtn" onclick="sendOrder()" value="Order">
+      </div>
     </div>
+  </div>
   </div>
 
 </body>

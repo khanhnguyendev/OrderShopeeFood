@@ -109,23 +109,40 @@ body::before {
 
 /** POPUP CONFIRM ORDER */
 .modal-container.open {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   inset: 0px;
   pointer-events: auto;
-  display: flex;
   -webkit-box-align: center;
-  align-items: center;
   -webkit-box-pack: center;
-  justify-content: center;
   padding: 1rem;
   z-index: 40;
-  background-color: rgb(0 0 0 / 90%);
+  background-color: rgb(0 0 0 / 95%);
 }
+
 .popup-confirm {
-  width: 500px;
-  background: #333333;
   border-radius: 10px;
-  border: #cacaca solid 1px;
+  background-color: #181a1b;
+  padding: 1rem;
+  z-index: 40;
+  border: rgb(95, 43, 147) solid 1px;
+}
+
+.popup-confirm-info {
+}
+
+#popup-confirm-title {
+  display: table;
+  margin: 0 auto;
+  font-family: 'Roboto';
+  font-size: 40px;
+}
+
+.popup-confirm-btn {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .popup-confirm input,
@@ -135,9 +152,21 @@ body::before {
   display: block;
   margin: 20px auto;
   text-align: center;
-  border: 2px solid #3498db;
+  border: 1px solid #3498db;
   padding: 14px 10px;
-  width: 250px;
+  outline: none;
+  color: white;
+  border-radius: 24px;
+  transition: 0.25s;
+}
+.popup-confirm input[type="text"]:disabled {
+  border: 0;
+  background: red;
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+  border: 2px solid red;
+  padding: 14px 10px;
   outline: none;
   color: white;
   border-radius: 24px;
@@ -146,36 +175,36 @@ body::before {
 
 .popup-confirm input[type="text"]:focus {
   width: 280px;
-  -webkit-animation: 9s colorChange alternate;
+  -webkit-animation: 9s colorChange alternate
   transition height 0.3s,
   width 0.3s 0.1s input: focus ~ .border
 }
 
 #orderConfirmBtn {
-  width: 170px;
-  background: none;
+  margin: 5px;
+  width: 150px;
+  height: 50px;
+  background: #2ecc71;
   display: block;
-  margin: 20px auto;
   text-align: center;
-  border: 2px solid #2ecc71;
+  border: 1px solid #2ecc71;
   padding: 14px 40px;
   outline: none;
-  color: white;
   border-radius: 24px;
   transition: 0.25s;
   cursor: pointer;
 }
 
 #orderCloseBtn {
-  width: 170px;
+  margin: 5px;
+  width: 150px;
+  height: 50px;
   background: none;
   display: block;
-  margin: 20px auto;
   text-align: center;
-  border: 2px solid #2ecc71;
+  border: 1px solid #2ecc71;
   padding: 14px 40px;
   outline: none;
-  color: white;
   border-radius: 24px;
   transition: 0.25s;
   cursor: pointer;
