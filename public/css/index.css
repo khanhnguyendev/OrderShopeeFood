@@ -53,6 +53,21 @@ body {
 
 }
 
+.box input[type="text"]:disabled {
+	border: 0;
+	background: #3498db;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #3498db;
+	padding: 14px 10px;
+	width: 200px;
+	outline: none;
+	border-radius: 24px;
+	transition: 0.25s;
+	color: rgb(32, 32, 32);
+}
+
 .box button {
 	border: 0;
 	background: none;
