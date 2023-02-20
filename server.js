@@ -16,6 +16,7 @@ const SUCCESS = "200";
 const ERROR = "400";
 const AUTHORITY = "401";
 let shopUrl = "";
+let restaurantName = "";
 
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -82,6 +83,7 @@ app.get("/:room", (req, res) => {
   const orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
   res.render("room", {
     roomName: req.params.room,
+    resName: restaurantName,
     foods: JSON.parse(menuJson),
     orders: JSON.parse(orderJson),
   });
@@ -377,9 +379,9 @@ async function getResId(req, res) {
         }
         return response.json();
       })
-      .then((data) => {
+      .then((deliveryInfo) => {
         logWriter(DEBUG, "Get delivery info successful");
-        getDeliveryDishes(data, req, res);
+        getRestaurantName(deliveryInfo, req, res)
       })
       .catch((error) => {
         logWriter(
@@ -392,8 +394,50 @@ async function getResId(req, res) {
   .catch((error) => console.error(error));
 }
 
+/**
+ * Get Restaurant Name
+ */
+async function getRestaurantName(deliveryInfo, req, res) {
+  let API = `https://gappapi.deliverynow.vn/api/delivery/get_detail?id_type=2&request_id=${deliveryInfo.reply.delivery_id}`
+  
+  import("node-fetch")
+  .then((module) => {
+    const fetch = module.default;
+
+    fetch(API, {
+      method: "GET",
+      headers: {
+        "x-foody-client-id": "",
+        "x-foody-client-type": "1",
+        "x-foody-app-type": "1004",
+        "x-foody-client-version": "3.0.0",
+        "x-foody-api-version": "1",
+        "x-foody-client-language": "vi",
+        "x-foody-access-token":
+          "6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not OK");
+        }
+        return response.json();
+      })
+      .then((json) => {
+        logWriter(DEBUG, "Get restaurant name successful");
+        restaurantName = json.reply.delivery_detail.name;
+        getDeliveryDishes(deliveryInfo, req, res);
+      })
+      .catch((error) => {
+        logWriter(DEBUG, "There has been a problem with your fetch operation");
+        logWriter(DEBUG, "getRestaurantName " + error);
+      });
+  })
+  .catch((error) => console.error(error));
+}
+
 async function getDeliveryDishes(deliveryInfo, req, res) {
-  let urlAPI = "https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=" + deliveryInfo.reply.delivery_id;
+  let urlAPI = `https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=${deliveryInfo.reply.delivery_id}`
 
   import("node-fetch")
   .then((module) => {
@@ -430,6 +474,7 @@ async function getDeliveryDishes(deliveryInfo, req, res) {
   })
   .catch((error) => console.error(error));
 }
+
 
 /**
  * Get menu list
@@ -473,6 +518,7 @@ function saveMenuJson(menuJson, req, res) {
 
   res.render("room", {
     roomName: req.params.room,
+    resName: restaurantName,
     foods: menuJson,
     orders: ordersData,
   });

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <meta name="description" content="">
-  <title>Order Shopee Food</title>
+  <title>Group Order Shopee Food</title>
 
   <link rel="stylesheet" href="/css/nicepage.css" media="screen">
   <link rel="stylesheet" href="/css/room.css" media="screen">
@@ -87,7 +87,7 @@
                               class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-6">
 
                               <!-- ORDER DETAIL -->
-                              <h2 id="order-list-title">Sinh Tố Vân - Điện Biên Phủ</h2>
+                              <h2 id="order-list-title"><%= resName %></h2>
                               <ol class="orders-list" id="display-order">
                                 <% orders.forEach((orderDetail)=> { %>
                                   <li onclick="confirmDelete(this)" id="<%= orderDetail.orderId %>"
