@@ -20,7 +20,7 @@ body::before {
   content: "";
   background-image: url(background.jpg);
   background-size: cover;
-  position: absolute;
+  position: fixed;
   top: 0px;
   right: 0px;
   bottom: 0px;
@@ -127,7 +127,7 @@ body::before {
   background-color: #181a1b;
   padding: 1rem;
   z-index: 40;
-  border: rgb(95, 43, 147) solid 1px;
+  border: rgb(97, 97, 97) solid 1px;
 }
 
 .popup-confirm-info {
@@ -152,7 +152,7 @@ body::before {
   display: block;
   margin: 20px auto;
   text-align: center;
-  border: 1px solid #3498db;
+  border: 1px solid #797979;
   padding: 14px 10px;
   outline: none;
   color: white;
@@ -161,11 +161,11 @@ body::before {
 }
 .popup-confirm input[type="text"]:disabled {
   border: 0;
-  background: red;
+  background: rgb(85, 85, 85);
   display: block;
   margin: 20px auto;
   text-align: center;
-  border: 2px solid red;
+  border: 1px solid rgb(97, 97, 97);
   padding: 14px 10px;
   outline: none;
   color: white;
@@ -645,7 +645,7 @@ ol span:before {
 }
 
 .u-section-1 .u-container-layout-7 {
-  height: 391px;
+  height: 392px;
   /* box-shadow: #00ADB5 0px 0px 0px 1px; */
   padding: 30px;
 }

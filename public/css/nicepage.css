@@ -11836,7 +11836,8 @@ section.u-image:not(.u-hover-box),
   margin: -5px;
 }
 .u-gutter-10 .u-layout .u-layout-cell {
-  border: 1px solid rgb(109,49,168);
+  /* border color */
+  /* border: 1px solid rgb(109,49,168); */
   background-color: rgb(26, 26, 26);
 }
 .u-gutter-10.u-layout-spacing-top {
@@ -11986,6 +11987,7 @@ section.u-image:not(.u-hover-box),
   min-height: -webkit-fit-content;
   min-height: fit-content;
   max-width: 100%;
+  margin-bottom: 5px;
 }
 .u-layout-cell {
   position: relative;
