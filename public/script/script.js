@@ -74,6 +74,7 @@ function showPopupConfirmOrder(e) {
     // Fill form
     document.getElementById("txtFoodName").value = e.getAttribute("data-title")
     document.getElementById("txtFoodPrice").value = e.getAttribute('data-price')
+    document.getElementById("txtFoodDes").innerHTML = e.getAttribute('data-des')
 }
 
 function closePopupConfirmOrder() {

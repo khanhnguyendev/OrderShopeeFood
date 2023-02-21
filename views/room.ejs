@@ -64,7 +64,7 @@
                                       <%= food.title %>
                                     </h4>
                                     <button type="button" class="button-order" onclick="showPopupConfirmOrder(this)"
-                                      data-title="<%= food.title %>" data-price="<%= food.price %>">
+                                      data-title="<%= food.title %>" data-price="<%= food.price %>" data-des="<%= food.des %>">
                                       <%= food.price %>
                                     </button>
                                   </div>
@@ -333,6 +333,7 @@
         <span id="popup-confirm-title">Confirm your order</span>
         <input id="txtFoodName" type="text" disabled placeholder="Food Name">
         <input id="txtFoodPrice" type="text" disabled placeholder="Price">
+        <input id="txtFoodDes" type="text" disabled placeholder="Description">
         <input id="txtFoodQty" type="number" name="qty" min="1" max="100" value="1">
         <input id="txtNote" type="text" placeholder="Note">
       </div>
