@@ -72,8 +72,8 @@ function showPopupConfirmOrder(e) {
     document.getElementById("popup-confirm").style.display = "block";
 
     // Fill form
-    document.getElementById("txtFoodName").innerText = e.getAttribute("data-title")
-    document.getElementById("txtFoodPrice").value = e.getAttribute('data-price')
+    document.getElementById("txtFoodName").innerHTML = e.getAttribute("data-title")
+    document.getElementById("txtFoodPrice").innerHTML = e.getAttribute('data-price')
     document.getElementById("txtFoodDes").innerHTML = e.getAttribute('data-des')
 }
 
@@ -137,13 +137,13 @@ function sendOrder(event) {
         const orderDetail = {
             roomName: roomName,
             orderUser: userName,
-            foodTitle: document.getElementById("txtFoodName").value,
-            foodPrice: document.getElementById("txtFoodPrice").value,
+            foodTitle: document.getElementById("txtFoodName").innerText,
+            foodPrice: document.getElementById("txtFoodPrice").innerText,
             orderTime: getCurrentTime(),
             foodAmount: document.getElementById("txtFoodQty").value,
             note: document.getElementById("txtNote").value
         };
-
+        closePopupConfirmOrder();
         socket.emit("send-order", orderDetail);
     } catch (error) {
         notify(TOASTR_ERROR, "Error", error.message);
@@ -190,8 +190,6 @@ socket.on('clear-order', (orderId) => {
 
 
 function appendMessage(orderDetail) {
-    // Close popup confirm
-    closePopupConfirmOrder();
     
     const orderId = orderDetail.orderId;
     const orderEl = document.getElementById(orderId);
