@@ -124,13 +124,15 @@ body::before {
 
 .popup-confirm {
   border-radius: 10px;
-  background-color: #181a1b;
+  background-color: #212121;
   padding: 1rem;
   z-index: 40;
-  border: rgb(97, 97, 97) solid 1px;
+  width: 400px;
 }
 
 .popup-confirm-info {
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 #popup-confirm-title {
@@ -142,35 +144,37 @@ body::before {
 
 .popup-confirm-btn {
   display: flex;
-  flex-wrap: nowrap;
+  justify-content: center;
 }
 
 .popup-confirm input,
 .popup-confirm input {
   border: 0;
-  background: none;
+  background: #0F0F0F;
   display: block;
   margin: 20px auto;
   text-align: center;
-  border: 1px solid #797979;
+  border: 1px solid #6e6e6e;
   padding: 14px 10px;
   outline: none;
   color: white;
   border-radius: 24px;
   transition: 0.25s;
 }
-.popup-confirm input[type="text"]:disabled {
+.popup-confirm p,input[type="text"]:disabled {
+  width: 300px;
   border: 0;
   background: rgb(85, 85, 85);
   display: block;
   margin: 20px auto;
   text-align: center;
-  border: 1px solid rgb(97, 97, 97);
+  border: 1px solid #3F3F3F;
   padding: 14px 10px;
   outline: none;
   color: white;
   border-radius: 24px;
   transition: 0.25s;
+  word-break: break-word
 }
 
 .popup-confirm input[type="text"]:focus {
@@ -181,13 +185,31 @@ body::before {
 }
 
 #orderConfirmBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin: 5px;
   width: 150px;
   height: 50px;
-  background: #2ecc71;
-  display: block;
+  background: #3EA6FF;
   text-align: center;
-  border: 1px solid #2ecc71;
+  padding: 14px 40px;
+  outline: none;
+  border-radius: 24px;
+  transition: 0.25s;
+  cursor: pointer;
+  border-color: transparent;
+}
+
+#orderConfirmBtn:hover {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  width: 150px;
+  height: 50px;
+  background: #91ccff;
+  text-align: center;
   padding: 14px 40px;
   outline: none;
   border-radius: 24px;
@@ -196,13 +218,31 @@ body::before {
 }
 
 #orderCloseBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin: 5px;
   width: 150px;
   height: 50px;
   background: none;
-  display: block;
   text-align: center;
-  border: 1px solid #2ecc71;
+  padding: 14px 40px;
+  outline: none;
+  border-radius: 24px;
+  transition: 0.25s;
+  cursor: pointer;
+  border-color: transparent;
+}
+
+#orderCloseBtn:hover {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  width: 150px;
+  height: 50px;
+  background: #868686;
+  text-align: center;
   padding: 14px 40px;
   outline: none;
   border-radius: 24px;
@@ -645,7 +685,7 @@ ol span:before {
 }
 
 .u-section-1 .u-container-layout-7 {
-  height: 392px;
+  height: 370px;
   /* box-shadow: #00ADB5 0px 0px 0px 1px; */
   padding: 30px;
 }

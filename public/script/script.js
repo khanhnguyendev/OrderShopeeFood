@@ -72,7 +72,7 @@ function showPopupConfirmOrder(e) {
     document.getElementById("popup-confirm").style.display = "block";
 
     // Fill form
-    document.getElementById("txtFoodName").value = e.getAttribute("data-title")
+    document.getElementById("txtFoodName").innerText = e.getAttribute("data-title")
     document.getElementById("txtFoodPrice").value = e.getAttribute('data-price')
     document.getElementById("txtFoodDes").innerHTML = e.getAttribute('data-des')
 }
