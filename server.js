@@ -55,37 +55,27 @@ app.post("/room", (req, res) => {
   io.emit("room-created", req.body.orderShopName);
 });
 
-// app.get('/:room', (req, res) => {
-//   if (rooms[req.params.room] == null) {
-//     return res.redirect('/')
-//   } else {
-//     let menuJson = fs.readFileSync(__dirname + "/dataJSON/menu.json");
-//     if (menuJson.length < 3) {
-//       fetchShopeeFood(req, res);
-//     } else {
-//       let orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
-//       res.render('room', { roomName: req.params.room, foods: JSON.parse(menuJson), orders: JSON.parse(orderJson) })
-//     }
-//   }
-// })
-
 app.get("/:room", (req, res) => {
   const room = rooms[req.params.room];
   if (!room) {
     return res.redirect("/");
   }
 
-  const menuJson = fs.readFileSync(__dirname + "/dataJSON/menu.json");
-  if (menuJson.length < 3) {
+  const menuInfo = fs.readFileSync(__dirname + "/dataJSON/menu.json");
+  if (menuInfo.length < 3) {
     return fetchShopeeFood(req, res);
   }
 
-  const orderJson = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+  const ordersHistory = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+
   res.render("room", {
     roomName: req.params.room,
     resName: restaurantName,
-    foods: JSON.parse(menuJson),
-    orders: JSON.parse(orderJson),
+    foods: JSON.parse(menuInfo),
+    orders: JSON.parse(ordersHistory),
+    sumOrders: summaryOrders(JSON.parse(ordersHistory)),
+    totalItems: JSON.parse(ordersHistory).length,
+    totalPrice: calTotalPrice(JSON.parse(ordersHistory))
   });
 });
 
@@ -203,7 +193,8 @@ io.on("connection", (socket) => {
           order.foodTitle === orderReq.foodTitle
         ) {
           // Update food amount
-          order.foodAmount = parseInt(order.foodAmount) + parseInt(orderReq.foodAmount);
+          order.foodAmount =
+            parseInt(order.foodAmount) + parseInt(orderReq.foodAmount);
 
           // Update order request
           orderReq.orderId = order.orderId;
@@ -243,11 +234,19 @@ io.on("connection", (socket) => {
             `[New order] [User: ${orderReq.orderUser}] [ID: ${orderReq.orderId}] [${orderReq.foodTitle} ${orderReq.foodPrice} ${orderReq.orderTime} ${orderReq.note}]`
           );
 
-          // ORDER SUCCESS
-          orderReq.status = SUCCESS;
+          const ordersHistory = fs.readFileSync(
+            __dirname + "/dataJSON/orders.json"
+          );
+
+          let sumOrders = summaryOrders(JSON.parse(ordersHistory));
+
+          let orderResult = {};
+          orderResult.status = SUCCESS;
+          orderResult.orderDetail = orderReq;
+          orderResult.sumOrders = sumOrders;
 
           // Send order to client
-          io.emit("receive-order", orderReq);
+          io.emit("receive-order", orderResult);
         }
       );
     }
@@ -354,127 +353,132 @@ async function fetchShopeeFood(req, res) {
  */
 async function getResId(req, res) {
   import("node-fetch")
-  .then((module) => {
-    const fetch = module.default;
+    .then((module) => {
+      const fetch = module.default;
 
-    fetch(
-      "https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=" +
-        shopUrl.replace("https://shopeefood.vn/", ""),
-      {
-        method: "GET",
-        headers: {
-          "x-foody-access-token": "",
-          "x-foody-api-version": "1",
-          "x-foody-app-type": "1004",
-          "x-foody-client-id": "",
-          "x-foody-client-language": "en",
-          "x-foody-client-type": "1",
-          "x-foody-client-version": "3.0.0",
-        },
-      }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not OK");
+      fetch(
+        "https://gappapi.deliverynow.vn/api/delivery/get_from_url?url=" +
+          shopUrl.replace("https://shopeefood.vn/", ""),
+        {
+          method: "GET",
+          headers: {
+            "x-foody-access-token": "",
+            "x-foody-api-version": "1",
+            "x-foody-app-type": "1004",
+            "x-foody-client-id": "",
+            "x-foody-client-language": "en",
+            "x-foody-client-type": "1",
+            "x-foody-client-version": "3.0.0",
+          },
         }
-        return response.json();
-      })
-      .then((deliveryInfo) => {
-        logWriter(DEBUG, "Get delivery info successful");
-        getRestaurantName(deliveryInfo, req, res)
-      })
-      .catch((error) => {
-        logWriter(
-          DEBUG,
-          "There has been a problem with your fetch operation" + error
-        );
-        logWriter(DEBUG, "getResId " + error);
-      });
-  })
-  .catch((error) => console.error(error));
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not OK");
+          }
+          return response.json();
+        })
+        .then((deliveryInfo) => {
+          logWriter(DEBUG, "Get delivery info successful");
+          getRestaurantName(deliveryInfo, req, res);
+        })
+        .catch((error) => {
+          logWriter(
+            DEBUG,
+            "There has been a problem with your fetch operation" + error
+          );
+          logWriter(DEBUG, "getResId " + error);
+        });
+    })
+    .catch((error) => console.error(error));
 }
 
 /**
  * Get Restaurant Name
  */
 async function getRestaurantName(deliveryInfo, req, res) {
-  let API = `https://gappapi.deliverynow.vn/api/delivery/get_detail?id_type=2&request_id=${deliveryInfo.reply.delivery_id}`
-  
-  import("node-fetch")
-  .then((module) => {
-    const fetch = module.default;
+  let API = `https://gappapi.deliverynow.vn/api/delivery/get_detail?id_type=2&request_id=${deliveryInfo.reply.delivery_id}`;
 
-    fetch(API, {
-      method: "GET",
-      headers: {
-        "x-foody-client-id": "",
-        "x-foody-client-type": "1",
-        "x-foody-app-type": "1004",
-        "x-foody-client-version": "3.0.0",
-        "x-foody-api-version": "1",
-        "x-foody-client-language": "vi",
-        "x-foody-access-token":
-          "6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b",
-      },
+  import("node-fetch")
+    .then((module) => {
+      const fetch = module.default;
+
+      fetch(API, {
+        method: "GET",
+        headers: {
+          "x-foody-client-id": "",
+          "x-foody-client-type": "1",
+          "x-foody-app-type": "1004",
+          "x-foody-client-version": "3.0.0",
+          "x-foody-api-version": "1",
+          "x-foody-client-language": "vi",
+          "x-foody-access-token":
+            "6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not OK");
+          }
+          return response.json();
+        })
+        .then((json) => {
+          logWriter(DEBUG, "Get restaurant name successful");
+          restaurantName = json.reply.delivery_detail.name;
+          getDeliveryDishes(deliveryInfo, req, res);
+        })
+        .catch((error) => {
+          logWriter(
+            DEBUG,
+            "There has been a problem with your fetch operation"
+          );
+          logWriter(DEBUG, "getRestaurantName " + error);
+        });
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not OK");
-        }
-        return response.json();
-      })
-      .then((json) => {
-        logWriter(DEBUG, "Get restaurant name successful");
-        restaurantName = json.reply.delivery_detail.name;
-        getDeliveryDishes(deliveryInfo, req, res);
-      })
-      .catch((error) => {
-        logWriter(DEBUG, "There has been a problem with your fetch operation");
-        logWriter(DEBUG, "getRestaurantName " + error);
-      });
-  })
-  .catch((error) => console.error(error));
+    .catch((error) => console.error(error));
 }
 
 async function getDeliveryDishes(deliveryInfo, req, res) {
-  let urlAPI = `https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=${deliveryInfo.reply.delivery_id}`
+  let urlAPI = `https://gappapi.deliverynow.vn/api/dish/get_delivery_dishes?id_type=2&request_id=${deliveryInfo.reply.delivery_id}`;
 
   import("node-fetch")
-  .then((module) => {
-    const fetch = module.default;
+    .then((module) => {
+      const fetch = module.default;
 
-    fetch(urlAPI, {
-      method: "GET",
-      headers: {
-        "x-foody-client-id": "",
-        "x-foody-client-type": "1",
-        "x-foody-app-type": "1004",
-        "x-foody-client-version": "3.0.0",
-        "x-foody-api-version": "1",
-        "x-foody-client-language": "vi",
-        "x-foody-access-token":
-          "6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b",
-      },
+      fetch(urlAPI, {
+        method: "GET",
+        headers: {
+          "x-foody-client-id": "",
+          "x-foody-client-type": "1",
+          "x-foody-app-type": "1004",
+          "x-foody-client-version": "3.0.0",
+          "x-foody-api-version": "1",
+          "x-foody-client-language": "vi",
+          "x-foody-access-token":
+            "6cf780ed31c8c4cd81ee12b0f3f4fdaf05ddf91a29ffce73212e4935ed9295fd354df0f4bc015478450a19bf80fddbe13302a61aa0c705af8315aae5a8e9cd6b",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not OK");
+          }
+          return response.json();
+        })
+        .then((json) => {
+          logWriter(DEBUG, "Get delivery detail successful");
+          // Filter menu list
+          getMenuJson(json, req, res);
+        })
+        .catch((error) => {
+          logWriter(
+            DEBUG,
+            "There has been a problem with your fetch operation"
+          );
+          logWriter(DEBUG, "getDeliveryDishes " + error);
+        });
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not OK");
-        }
-        return response.json();
-      })
-      .then((json) => {
-        logWriter(DEBUG, "Get delivery detail successful");
-        // Filter menu list
-        getMenuJson(json, req, res);
-      })
-      .catch((error) => {
-        logWriter(DEBUG, "There has been a problem with your fetch operation");
-        logWriter(DEBUG, "getDeliveryDishes " + error);
-      });
-  })
-  .catch((error) => console.error(error));
+    .catch((error) => console.error(error));
 }
-
 
 /**
  * Get menu list
@@ -521,5 +525,42 @@ function saveMenuJson(menuJson, req, res) {
     resName: restaurantName,
     foods: menuJson,
     orders: ordersData,
+    sumOrders: ordersData,
+    totalItems: 0,
+    totalPrice: 0
   });
 }
+
+function summaryOrders(ordersJson) {
+  let sumOrders = [];
+
+  for (let i = 0; i < ordersJson.length; i++) {
+    let foodTitle = ordersJson[i].foodTitle;
+    let foodAmount = parseInt(ordersJson[i].foodAmount);
+    let foodPrice = parseInt(ordersJson[i].foodPrice);
+
+    let order = {};
+
+    if (order[foodTitle]) {
+      order.foodTitle = foodTitle;
+      order.foodAmount += foodAmount;
+    } else {
+      order.foodTitle = foodTitle;
+      order.foodAmount = foodAmount;
+    }
+    order.foodPrice = foodPrice * foodAmount;
+    sumOrders.push(order);
+  }
+
+  return sumOrders;
+}
+
+function calTotalPrice(ordersJson) {
+  let totalPrice = 0;
+  for (let i = 0; i < ordersJson.length; i++) {
+    totalPrice += parseInt(ordersJson[i].foodPrice);
+  }
+  return `${totalPrice},000đ`;
+
+}
+

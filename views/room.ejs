@@ -102,18 +102,18 @@
                                         <div id="order-info-1"><label id="user-txt">
                                             <%= orderDetail.orderUser %>
                                           </label><label id="order-time-txt">
-                                            <%=orderDetail.orderTime %>
+                                            <%= orderDetail.orderTime %>
                                           </label>
                                         </div>
                                         <div id="order-info-2"><label id="food-amount-txt">
-                                            <%=orderDetail.foodAmount %> x
+                                            <%= orderDetail.foodAmount %> x
                                           </label><label id="order-title-txt">
                                             <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %>
                                           </label>
                                         </div>
                                         <div id="order-info-2">
                                           <label id="note-txt">
-                                            Note: <%=orderDetail.note %>
+                                            Note: <%= orderDetail.note %>
                                           </label>
                                         </div>
                                       </div>
@@ -136,27 +136,28 @@
                             class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-60 u-layout-cell-3">
                             <div class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-7">
 
-                              <h2 id="order-list-title">Chưa Code =))</h2>
+                              <h2 id="order-list-title">Summary Order</h2>
 
-                              <div class="summary-order-container">
+                              <div class="summary-order-container" id="display-summary">
 
+                                <% sumOrders.forEach((sumDetail)=> { %>
                                 <div class="summary-detail">
                                   <div class="summary-info">
-                                    <img class="sum-food-image" src="">
-                                    <span class="sum-qty-txt">2 x </span>
-                                    <span class="sum-food-txt">Milo dầm thập cẩm kem trứng WOW </span>
+                                    <span class="sum-qty-txt"><%= sumDetail.foodAmount %></span>
+                                    <span class="sum-food-txt"><%= sumDetail.foodTitle %></span>
                                   </div>
                                   <div class="sum-total-txt">
-                                    <span>1,000,000đ</span>
+                                    <span><%=sumDetail.foodPrice %>,000đ</span>
                                   </div>
                                 </div>
+                                <% }) %>
 
                               </div>
 
                               <div class="subtotal-container">
                                 <div class="subtotal-info">
-                                  <span class="subtotal-txt">Subtotal (13 items)</span>
-                                  <span class="subtotal-price-txt">1,000,000đ</span>
+                                  <span id="sub-total-txt" class="subtotal-txt">Subtotal (<%= totalItems %> items)</span>
+                                  <span id="total-price-txt" class="subtotal-price-txt"><%= totalPrice %></span>
                                 </div>
                               </div>
 

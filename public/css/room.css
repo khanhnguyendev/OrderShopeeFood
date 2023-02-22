@@ -429,7 +429,8 @@ ol span:before {
 .summary-order-container {
   align-items: center;
   width: 500px;
-  height: 250px;
+  height: 240px;
+  margin-bottom: 10px;
   overflow-y: auto;
 }
 
@@ -685,7 +686,7 @@ ol span:before {
 }
 
 .u-section-1 .u-container-layout-7 {
-  height: 370px;
+  height: 392px;
   /* box-shadow: #00ADB5 0px 0px 0px 1px; */
   padding: 30px;
 }
