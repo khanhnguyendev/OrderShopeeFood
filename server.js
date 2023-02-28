@@ -1,12 +1,19 @@
 const express = require("express");
-const https = require("https");
 const app = express();
+const https = require("https");
+
+// mongoose
+const mongoose = require("mongoose");
+const OrderHistory = require("./models/OrderHistory").OrderHistory;
+
 const server = require("http").Server(app);
 const port = process.env.PORT || 3000;
 const io = require("socket.io")(server);
+
 const Nightmare = require("nightmare");
 const cheerio = require("cheerio");
 const fs = require("fs");
+
 require = require("esm")(module);
 
 const CONNECTION = "CONNECTION";
@@ -15,8 +22,10 @@ const DEBUG = "DEBUG";
 const SUCCESS = "200";
 const ERROR = "400";
 const AUTHORITY = "401";
+
 let shopUrl = "";
 let restaurantName = "";
+let roomName = "";
 
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -24,6 +33,57 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
 
 const rooms = {};
+
+const uri =
+  "mongodb+srv://khanhnguyendev:<pass>@groupordershopeefood.gjgtfwr.mongodb.net/?retryWrites=true&w=majority";
+
+async function connectDB() {
+  try {
+    await mongoose.connect(uri);
+    logWriter(DEBUG, "MongoDB Connected");
+
+    server.listen(port, function () {
+      logWriter(DEBUG, "Server is running ");
+      logWriter(DEBUG, "http://localhost:" + port);
+    });
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+connectDB();
+
+app.get("/test", (req, res) => {
+  const createOrder = function(roomName, userName, title, price, qty, date) {
+    const orderDetail = new OrderHistory({
+      roomName,
+      userName,
+      title,
+      price,
+      qty,
+      date
+    });
+  
+    return orderDetail.save();
+  };
+  
+  createOrder(roomName, "admin", "food title", 200000, 2, Date())
+    .then(order => {
+      console.log("> Created new Order\n", order);
+      res.send(order);
+    })
+    .catch(err => console.log(err));
+})
+
+app.get("/getOrders", (req, res) => {
+  const showOrderHistory = async function() {
+    const orderHistory = await OrderHistory.find()
+      .select("-__v -customer.__v -customer._id");
+      console.log("> Show Order History\n", orderHistory);
+      res.send(orderHistory);
+  };
+  showOrderHistory()
+})
 
 app.get("/", (req, res) => {
   res.render("index", { rooms: rooms });
@@ -44,12 +104,14 @@ app.post("/room", (req, res) => {
   fs.writeFile(__dirname + "/dataJSON/orders.json", "[]", function () {
     logWriter(DATA, "Order log has been cleared");
   });
-  rooms[req.body.orderShopName] = { users: {} };
+
+  roomName = req.body.orderShopName
+  rooms[roomName] = { users: {} };
 
   // Get shop url
   shopUrl = req.body.orderShopUrl;
 
-  res.redirect(req.body.orderShopName);
+  res.redirect(roomName);
 
   // Send message that new room was created
   io.emit("room-created", req.body.orderShopName);
@@ -75,7 +137,7 @@ app.get("/:room", (req, res) => {
     orders: JSON.parse(ordersHistory),
     sumOrders: summaryOrders(JSON.parse(ordersHistory)),
     totalItems: JSON.parse(ordersHistory).length,
-    totalPrice: calTotalPrice(JSON.parse(ordersHistory))
+    totalPrice: calTotalPrice(JSON.parse(ordersHistory)),
   });
 });
 
@@ -174,136 +236,131 @@ io.on("connection", (socket) => {
   /**
    * Send order detail
    */
-  socket.on("send-order", (orderReq) => {
-    // Validate Order User
-    if (orderReq.orderUser === null || orderReq.orderUser.length < 1) {
-      // ORDER FAILED
-      orderReq.status = ERROR;
-      io.emit("receive-order", orderReq);
-    } else {
-      // Fetching orders history
-      orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
-      let ordersJson = JSON.parse(orders);
-      let isDuplicateOrder = false;
+  // socket.on("send-order", (orderReq) => {
+  //   // Validate Order User
+  //   if (orderReq.orderUser === null || orderReq.orderUser.length < 1) {
+  //     // ORDER FAILED
+  //     orderReq.status = ERROR;
+  //     io.emit("receive-order", orderReq);
+  //   } else {
+  //     // Fetching orders history
+  //     orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+  //     let ordersJson = JSON.parse(orders);
+  //     let isDuplicateOrder = false;
 
-      // Duplicate order
-      for (const order of ordersJson) {
-        if (
-          order.orderUser === orderReq.orderUser &&
-          order.foodTitle === orderReq.foodTitle
-        ) {
-          // Update food amount
-          order.foodAmount =
-            parseInt(order.foodAmount) + parseInt(orderReq.foodAmount);
+  //     // Duplicate order
+  //     for (const order of ordersJson) {
+  //       if (
+  //         order.orderUser === orderReq.orderUser &&
+  //         order.foodTitle === orderReq.foodTitle
+  //       ) {
+  //         // Update food amount
+  //         order.foodAmount =
+  //           parseInt(order.foodAmount) + parseInt(orderReq.foodAmount);
 
-          // Update order request
-          orderReq.orderId = order.orderId;
-          orderReq.foodAmount = order.foodAmount;
+  //         // Update order request
+  //         orderReq.orderId = order.orderId;
+  //         orderReq.foodAmount = order.foodAmount;
 
-          // Update note
-          order.note = orderReq.note;
+  //         // Update note
+  //         order.note = orderReq.note;
 
-          // Duplicate Order flag
-          isDuplicateOrder = true;
-          break;
-        }
-      }
+  //         // Duplicate Order flag
+  //         isDuplicateOrder = true;
+  //         break;
+  //       }
+  //     }
 
-      // New order
-      if (!isDuplicateOrder) {
-        orderReq.orderId = ordersJson.length + 1;
-        ordersJson.push(orderReq);
-      }
+  //     // New order
+  //     if (!isDuplicateOrder) {
+  //       orderReq.orderId = ordersJson.length + 1;
+  //       ordersJson.push(orderReq);
+  //     }
 
-      // Saving orders to file
-      fs.writeFile(
-        __dirname + "/dataJSON/orders.json",
-        JSON.stringify(ordersJson),
-        "utf8",
-        function (err) {
-          // Error checking
-          if (err) {
-            logWriter(DEBUG, err);
+  //     // Saving orders to file
+  //     fs.writeFile(
+  //       __dirname + "/dataJSON/orders.json",
+  //       JSON.stringify(ordersJson),
+  //       "utf8",
+  //       function (err) {
+  //         // Error checking
+  //         if (err) {
+  //           logWriter(DEBUG, err);
 
-            // ORDER FAILED
-            orderReq.status = ERROR;
-            return io.emit("receive-order", orderReq);
-          }
-          logWriter(
-            DATA,
-            `[New order] [User: ${orderReq.orderUser}] [ID: ${orderReq.orderId}] [${orderReq.foodTitle} ${orderReq.foodPrice} ${orderReq.orderTime} ${orderReq.note}]`
-          );
+  //           // ORDER FAILED
+  //           orderReq.status = ERROR;
+  //           return io.emit("receive-order", orderReq);
+  //         }
+  //         logWriter(
+  //           DATA,
+  //           `[New order] [User: ${orderReq.orderUser}] [ID: ${orderReq.orderId}] [${orderReq.foodTitle} ${orderReq.foodPrice} ${orderReq.orderTime} ${orderReq.note}]`
+  //         );
 
-          const ordersHistory = fs.readFileSync(
-            __dirname + "/dataJSON/orders.json"
-          );
+  //         const ordersHistory = fs.readFileSync(
+  //           __dirname + "/dataJSON/orders.json"
+  //         );
 
-          let sumOrders = summaryOrders(JSON.parse(ordersHistory));
+  //         let sumOrders = summaryOrders(JSON.parse(ordersHistory));
 
-          let orderResult = {};
-          orderResult.status = SUCCESS;
-          orderResult.orderDetail = orderReq;
-          orderResult.sumOrders = sumOrders;
+  //         let orderResult = {};
+  //         orderResult.status = SUCCESS;
+  //         orderResult.orderDetail = orderReq;
+  //         orderResult.sumOrders = sumOrders;
 
-          // Send order to client
-          io.emit("receive-order", orderResult);
-        }
-      );
-    }
-  });
+  //         // Send order to client
+  //         io.emit("receive-order", orderResult);
+  //       }
+  //     );
+  //   }
+  // });
 
   /**
    * Detele Order
    */
-  socket.on("delete-confirm", (orderDetail) => {
-    // Fetching order history
-    orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
-    if (orders.length > 2) {
-      let ordersJson = JSON.parse(orders);
+  // socket.on("delete-confirm", (orderDetail) => {
+  //   // Fetching order history
+  //   orders = fs.readFileSync(__dirname + "/dataJSON/orders.json");
+  //   if (orders.length > 2) {
+  //     let ordersJson = JSON.parse(orders);
 
-      let selectedOrder = {
-        roomName: orderDetail.roomName,
-        orderUser: orderDetail.orderUser,
-        foodTitle: orderDetail.foodTitle,
-        foodprice: orderDetail.foodprice,
-        orderTime: orderDetail.orderTime,
-      };
+  //     let selectedOrder = {
+  //       roomName: orderDetail.roomName,
+  //       orderUser: orderDetail.orderUser,
+  //       foodTitle: orderDetail.foodTitle,
+  //       foodprice: orderDetail.foodprice,
+  //       orderTime: orderDetail.orderTime,
+  //     };
 
-      ordersJson.forEach((orderJson) => {
-        if (orderJson === selectedOrder) {
-          ordersJson.splice(orderJson);
-        }
-      });
+  //     ordersJson.forEach((orderJson) => {
+  //       if (orderJson === selectedOrder) {
+  //         ordersJson.splice(orderJson);
+  //       }
+  //     });
 
-      // Delele order from file
-      fs.writeFile(
-        __dirname + "/dataJSON/orders.json",
-        JSON.stringify(ordersJson),
-        "utf8",
-        function (err) {
-          // Error checking
-          if (err) {
-            logWriter(DEBUG, err);
+  //     // Delele order from file
+  //     fs.writeFile(
+  //       __dirname + "/dataJSON/orders.json",
+  //       JSON.stringify(ordersJson),
+  //       "utf8",
+  //       function (err) {
+  //         // Error checking
+  //         if (err) {
+  //           logWriter(DEBUG, err);
 
-            // ORDER FAILED
-            orderDetail.status = ERROR;
-            return io.emit("delete-order", orderDetail);
-          }
+  //           // ORDER FAILED
+  //           orderDetail.status = ERROR;
+  //           return io.emit("delete-order", orderDetail);
+  //         }
 
-          // ORDER SUCCESS
-          orderDetail.status = SUCCESS;
+  //         // ORDER SUCCESS
+  //         orderDetail.status = SUCCESS;
 
-          // Send order to client
-          io.emit("delete-order", orderDetail);
-        }
-      );
-    }
-  });
-});
-
-server.listen(port, function () {
-  logWriter(DEBUG, "Server is running ");
-  logWriter(DEBUG, "http://localhost:" + port);
+  //         // Send order to client
+  //         io.emit("delete-order", orderDetail);
+  //       }
+  //     );
+  //   }
+  // });
 });
 
 /**
@@ -527,7 +584,7 @@ function saveMenuJson(menuJson, req, res) {
     orders: ordersData,
     sumOrders: ordersData,
     totalItems: 0,
-    totalPrice: 0
+    totalPrice: 0,
   });
 }
 
@@ -561,6 +618,4 @@ function calTotalPrice(ordersJson) {
     totalPrice += parseInt(ordersJson[i].foodPrice);
   }
   return `${totalPrice},000đ`;
-
 }
-
