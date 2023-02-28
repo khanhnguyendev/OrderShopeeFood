@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <title>Group Order Shopee Food</title>
+
+  <link rel="stylesheet" href="/css/nicepage.css" media="screen">
+  <link rel="stylesheet" href="/css/room.css" media="screen">
+  <link rel="stylesheet" href="/css/bg.css">
+  <link rel="stylesheet" href="/css/toastr.min.css">
+
+  <!-- <script defer src="http://localhost:3000/socket.io/socket.io.js"></script> -->
+  <script defer src="/script/socket.io.js"></script>
+  <script defer src="/script/jquery.js"></script>
+  <script defer src="/script/nicepage.js"></script>
+  <script defer src="/script/script.js"></script>
+  <!-- <script defer src="/script/background.js"></script> -->
+  <script defer src="/script/toastr.min.js"></script>
+
+  <script>
+    const roomName = "<%= roomName %>"
+  </script>
+  <link id="u-theme-google-font" rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+  <link id="u-page-google-font" rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i">
+
+  <script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": ""
+}</script>
+  <meta name="theme-color" content="#478ac9">
+  <meta property="og:title" content="Home">
+  <meta property="og:type" content="website">
+</head>
+
+<body class="u-body u-xl-mode" data-lang="en">
+  <div class="main-page page">
+    <section class="main-page-content">
+      <form id="send-container">
+        <section class="u-align-center u-clearfix u-section-1" id="carousel_329e">
+          <div class="u-clearfix u-sheet u-sheet-1">
+            <div class="u-clearfix u-expanded-width u-gutter-10 u-layout-wrap u-opacity u-opacity-10 u-layout-wrap-1">
+              <div class="u-layout">
+                <div class="u-layout-row">
+                  <div class="u-size-30 u-size-60-md">
+                    <div class="u-layout-col">
+                      <div class="u-container-style u-layout-cell u-radius-10 u-shape-round u-layout-cell-1">
+                        <div
+                          class="u-border-2 u-border-palette-4-light-2 u-container-layout u-valign-middle u-container-layout-1">
+                          <div class="u-list u-list-1">
+                            <div class="u-repeater u-repeater-1">
+                              <% foods.forEach((food)=> { %>
+                                <div
+                                  class="u-align-left u-container-style u-gradient u-list-item u-opacity u-opacity-75 u-radius-20 u-repeater-item u-shape-round u-list-item-1">
+                                  <div class="u-container-layout u-similar-container u-container-layout-2">
+                                    <img class="u-border-2 u-border-white u-image u-image-round u-radius-15 u-image-1"
+                                      alt="" data-image-width="800" data-image-height="604" src="<%= food.image %>">
+                                    <h4 class="u-align-center u-custom-font u-font-montserrat u-text u-text-2">
+                                      <%= food.title %>
+                                    </h4>
+                                    <button type="button" class="button-order" onclick="showPopupConfirmOrder(this)"
+                                      data-title="<%= food.title %>" data-price="<%= food.price %>" data-des="<%= food.des %>">
+                                      <%= food.price %>
+                                    </button>
+                                  </div>
+                                </div>
+                                <% }) %>
+                            </div>
+                            </br>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="u-size-30 u-size-60-md">
+                    <div class="u-layout-col">
+                      <div class="u-size-30">
+                        <div class="u-layout-row">
+                          <div
+                            class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-60 u-layout-cell-2">
+                            <div id="order-container"
+                              class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-6">
+
+                              <!-- ORDER DETAIL -->
+                              <h2 id="order-list-title"><%= resName %></h2>
+                              <ol class="orders-list" id="display-order">
+                                <% orders.forEach((orderDetail)=> { %>
+                                  <li onclick="confirmDelete(this)" id="<%= orderDetail.orderId %>"
+                                    data-room="<%= orderDetail.roomName %>" data-user="<%= orderDetail.orderUser %>"
+                                    data-food="<%= orderDetail.foodTitle %>" data-price="<%= orderDetail.foodPrice %>"
+                                    data-time="<%= orderDetail.orderTime %>" data-amount="<% orderDetail.foodAmount %>">
+
+                                    <span class="order-detail">
+                                      <img class="user-avatar" alt="User Avatar"
+                                        src="https://haycafe.vn/wp-content/uploads/2022/03/hinh-meo-hai-huoc.jpg">
+                                      <div class="order-text">
+                                        <div id="order-info-1"><label id="user-txt">
+                                            <%= orderDetail.orderUser %>
+                                          </label><label id="order-time-txt">
+                                            <%= orderDetail.orderTime %>
+                                          </label>
+                                        </div>
+                                        <div id="order-info-2"><label id="food-amount-txt">
+                                            <%= orderDetail.foodAmount %> x
+                                          </label><label id="order-title-txt">
+                                            <%= orderDetail.foodTitle %> x <%=orderDetail.foodPrice %>
+                                          </label>
+                                        </div>
+                                        <div id="order-info-2">
+                                          <label id="note-txt">
+                                            Note: <%= orderDetail.note %>
+                                          </label>
+                                        </div>
+                                      </div>
+                                    </span>
+                                  </li>
+                                  <% }) %>
+                              </ol>
+                              <!-- ORDER DETAIL -->
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="u-size-30">
+                        <div class="u-layout-row">
+                          <!-- SUMMARY -->
+                          <div
+                            class="u-container-style u-layout-cell u-radius-10 u-shape-round u-size-60 u-layout-cell-3">
+                            <div class="u-border-2 u-border-palette-4-light-2 u-container-layout u-container-layout-7">
+
+                              <h2 id="order-list-title">Summary Order</h2>
+
+                              <div class="summary-order-container" id="display-summary">
+
+                                <% sumOrders.forEach((sumDetail)=> { %>
+                                <div class="summary-detail">
+                                  <div class="summary-info">
+                                    <span class="sum-qty-txt"><%= sumDetail.foodAmount %></span>
+                                    <span class="sum-food-txt"><%= sumDetail.foodTitle %></span>
+                                  </div>
+                                  <div class="sum-total-txt">
+                                    <span><%=sumDetail.foodPrice %>,000đ</span>
+                                  </div>
+                                </div>
+                                <% }) %>
+
+                              </div>
+
+                              <div class="subtotal-container">
+                                <div class="subtotal-info">
+                                  <span id="sub-total-txt" class="subtotal-txt">Subtotal (<%= totalItems %> items)</span>
+                                  <span id="total-price-txt" class="subtotal-price-txt"><%= totalPrice %></span>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- POPUP Define User Name -->
+        <div class="popup" id="popup-username" style="display: none;">
+          <h2>What should i call you?</h2>
+          <input id="userName" type="text" placeholder="Your Name" required>
+          <input id="confirmBtn" onclick="confirmUserName()" value="Yes, please!">
+        </div>
+
+      </form>
+
+    </section>
+
+  <!-- POPUP Confirm Order -->
+  <div class="modal-container">
+    <div class="popup-confirm" id="popup-confirm" style="display: none;">
+      <span id="popup-confirm-title">Confirm your order</span>
+      <div class="popup-confirm-info">
+        <p id="txtFoodName" type="text" disabled placeholder="Food Name"></p>
+        <p id="txtFoodPrice" type="text" disabled placeholder="Price"></p>
+        <p id="txtFoodDes" type="text" disabled placeholder="Description"></p>
+      </div>
+      <input id="txtFoodQty" type="number" name="qty" min="1" max="100" value="1">
+      <input id="txtNote" type="text" placeholder="Note">
+      <div class="popup-confirm-btn">
+        <button id="orderCloseBtn" onclick="closePopupConfirmOrder()">Close</button>
+        <button id="orderConfirmBtn" onclick="sendOrder()">Order</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</body>
+
+</html>

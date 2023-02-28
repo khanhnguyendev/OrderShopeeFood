@@ -1,0 +1,117 @@
+@import "variable";
+// Common
+@media screen and (min-width: 500px) {
+    .menu-wrapper {
+        justify-content: flex-start;
+    }
+}
+@media screen and (min-width: 500px) and (max-width: 767px) {
+    .tab-pane {
+        .card {
+            width: calc(50% - 20px);
+        }
+    }
+}
+@media screen and (min-width: @screen-sm-min) {
+    // .tab-pane {
+    //     .card {
+    //         width: calc(33% - 20px);
+    //     }
+    // }
+}
+// Phone
+@media screen and (max-width: @screen-xs-max) {
+    // Home tab
+    // .menu-wrapper {
+    //     .card {
+    //         margin: 0 auto;
+    //     }
+    // }
+    .nav-item {
+        font-size: 1rem;
+    }
+    .summary-container {
+        flex-direction: column;
+    }
+///////////////////////////
+// Summary tab
+
+
+/////////////////////////////////
+
+// Contact tab
+
+
+}
+@media screen and (max-width: @screen-md-min) {
+    .summary {
+        &-container {
+            flex-direction: column;
+        }
+        &-left {
+            border-bottom: 1px solid #fff;
+        }
+    }
+   
+}
+@media screen and (min-width: @screen-md-min) {
+    .summary-left,
+    .summary-right {
+        width: calc(50% - 20px);
+    }
+    .summary {
+        &-right {
+            margin-top: 0;
+            &--wrapper {
+                padding: 20px 30px;
+            }
+        }
+        &-left {
+            &:after {
+                content: "";
+                background-color: #fff;
+                position: absolute;
+                width: 3px;
+                height: 100%;
+                top: 10px;
+                left: 50%;
+                top: 50%;
+                transform: translateY(-50%);
+                display: block;
+            }
+        }
+    }
+}
+
+// Tablet
+@media screen and (min-width: @screen-sm-min) and(max-width: @screen-sm-max) {
+    .tab-pane {
+        .card {
+            width: calc(33% - 20px);
+        }
+    }
+}
+
+// Desktop
+@media screen and (min-width: @screen-md-min) and(max-width: @screen-md-max) {
+    
+}
+// Desktop
+@media screen and (min-width: @screen-md-min) {
+    .tab-pane {
+        .card {
+            width: calc(25% - 20px);
+        }
+    }
+    .summary-left {
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+    }
+}
+
+// Large Desktop
+@media screen and (min-width: @screen-lg-min){
+    
+}

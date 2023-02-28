@@ -1,0 +1,340 @@
+// Common
+html, body {
+    height: 100%;
+}
+body {
+    color: @main-color;
+    &:before {
+        content: "";
+        background-image: @background-image;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        z-index: -1;
+        filter: brightness(70%);
+    }
+}
+.tab-pane {
+    overflow: auto;
+    padding-top: 20px;
+    .card {
+        margin-top: 10px;
+        padding: 20px 10px 10px;
+        width: 100%;
+        margin: 10px;
+        > a {
+            width: 120px;
+            margin: 0 auto;
+        }
+    }
+}
+.nav.nav-tabs {
+    justify-content: center;
+    font-size: 21px;
+    margin: 20px 0 0;
+    border: 0;
+}
+.nav-item {
+    .nav-link {
+        color: #fff;
+        margin-bottom: 0;
+        border: 1px solid transparent;
+        border-bottom: 0;
+        border-radius: 20px 20px 0 0;
+        &.active {
+            background: transparent;
+            border: 1px solid #fff;
+            border-bottom: 0;
+            color: #fff;
+        }
+        &:hover {
+            border-color: transparent;
+            border: 1px solid #fff;
+            border-bottom: 0;
+        }
+    }
+}
+#order-list-title {
+    width: 100%;
+    font-family: 'Roboto';
+    font-size: 20px;
+    color: aqua;
+    padding-left: 10px;
+}
+.container {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+}
+.tab-container {
+    width: 100%;
+}
+.comming-soon {
+    color: @main-color;
+    text-align: center;
+}
+// Home tab
+img.card-img-top {
+    height: 195px;
+    width: 196px;
+    border: 1px solid #fff;
+    margin: 10px auto 0px auto;
+}
+div.card-body-content {
+    letter-spacing: 1px;
+    font-weight: 500;
+    height: 70px;
+    overflow-y: auto;
+    margin: 30px 20px 0;
+    text-align: center;
+}
+.menu-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    text-align: center;
+}
+///////////////////////////
+// Summary tab
+.summary-container {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+ol .order-detail {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    border-radius: 10px;
+    box-shadow: rgb(0 0 0 / 60%) 0px 14px 28px, rgb(0 0 0 / 22%) 0px 10px 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.order-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+#order-info-1 {
+    display: flex;
+    align-items: center;
+    max-width: 330px;
+    overflow-x: auto;
+}
+#order-info-2 {
+    max-width: 330px;
+    overflow-x: auto;
+}
+#order-info-2 {
+    max-width: 330px;
+    overflow-x: auto;
+}
+#user-txt {
+    font-size: 18px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: rgb(255, 0, 0);
+    text-shadow: none;
+}
+#order-time-txt {
+    font-size: 12px;
+    color: gray;
+    margin-left: 5px;
+}
+#order-title-txt {
+    max-width: 200px;
+    word-wrap: break-word;
+}
+.order-detail {
+    content: " ";
+    position: relative;
+    display: block;
+    padding: 0.4em 0.4em 0.4em 2.5em;
+    margin: 0.5em 0;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    border-radius: 0.3em;
+    transition: .3s ease-out;
+    box-shadow: rgb(255 255 255 / 20%) 0px 0px 0px 1px inset, rgb(0 0 0 / 90%) 0px 0px 0px 1px;
+    &:before {
+        content: counter(li);
+        counter-increment: li;
+        position: absolute;
+        left: 0.3em;
+        top: 60%;
+        margin-top: -1.3em;
+        background: #08d9d6d7;
+        height: 2em;
+        width: 2em;
+        border: 0.2em solid #fff;
+        text-align: center;
+        font-weight: bold;
+        border-radius: 2em;
+        transition: all .3s ease-out;
+    }
+    &:hover {
+        background: #E9E4E0;
+        text-decoration: line-through;
+        color: #ff0202;
+        &:before {
+            content: "X";
+            color: rgb(255, 255, 255);
+            background: #ff0202;
+            transform: rotate(360deg);
+        }
+    }
+}
+.orders-list {
+    counter-reset: li;
+    padding: 0;
+}
+.summary-left,
+.summary-right {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+.summary {
+    &-right {
+        margin-top: 1rem;
+    }
+    &-detail {
+        display: flex;
+        border-radius: 10px;
+        box-shadow: rgb(0 0 0 / 60%) 0px 14px 28px, rgb(0 0 0 / 22%) 0px 10px 10px;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        color: @main-color;
+        &:not(:first-child){
+            margin-top: 10px;
+        }
+
+    }
+    &-info {
+        display: flex;
+        margin-left: 10px;
+        width: 100%;
+        max-width: 80%;
+        align-items: center;
+    }
+    &-right {
+        &--container {
+            height: 100%;
+        }
+        &--wrapper {
+            padding: 10px;
+            height: 100%;
+            #order-list-title {
+                text-transform: uppercase;
+            }
+            .summary-order-container,
+            .subtotal-container {
+                margin-top: 10px;
+            }
+        }
+    }
+    &-order-container {
+        height: calc(100% - 100px);
+    }
+}
+.sum-qty-txt {
+    width: 45px;
+}
+.sum-food-txt {
+    width: calc(100% - 90px);
+}
+
+.tab-wrapper {
+    height: 100vh;
+    overflow: auto;
+}
+.tab-content {
+    height: calc(100% - 100px);
+    word-break: break-word;
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-radius: 30px;
+}
+.tab-pane {
+    height: 100%;
+    &::-webkit-scrollbar {
+        width: 5px;
+        height: 10px;
+    }
+    // &::-webkit-scrollbar-track {
+    //     background: #000; 
+    // }
+    // &::-webkit-scrollbar-thumb {
+    //     background: linear-gradient(#000, #008488); 
+    //     height: 10px;
+    //     border-radius: 30px;
+    // }
+    // &::-webkit-scrollbar-thumb:hover {
+    //     background: #555; 
+    // }
+}
+.subtotal {
+    &-container {
+        padding: 10px;
+        height: 50px;
+        box-shadow: rgb(255 1 1) 2px 2px 2px 2px;
+    }
+    &-info {
+        color: @main-color;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+
+/////////////////////////////////
+
+// Contact tab
+
+
+
+
+
+
+
+// .nav.nav-tabs {
+//     margin-bottom: -1px;
+//     .nav-item {
+//         position: relative;
+//     }
+//     .nav-link.active {
+//         background: #000;
+
+//         &:after {
+//             content: "";
+//             position: absolute;
+//             width: 200px;
+//             height: 100px;
+//             border-top-left-radius: 110px;
+//             border-top-right-radius: 110px;
+//             border: 10px solid gray;
+//             border-bottom: 0;
+//             transform: rotate(-45deg);
+//         }
+//     }
+// }
